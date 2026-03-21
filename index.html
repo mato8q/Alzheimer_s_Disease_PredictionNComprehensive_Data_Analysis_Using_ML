@@ -1,190 +1,164 @@
 <!DOCTYPE html>
-<html lang="th" class="scroll-smooth">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alzheimer's Prediction - Research Showcase</title>
+    <title>Alzheimer's Disease Prediction - Project Showcase</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Prompt', sans-serif; background-color: #F9F8F6; color: #2D3748; }
-        .chart-container { position: relative; width: 100%; max-width: 800px; margin: auto; height: 350px; }
-        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        body { font-family: 'Inter', sans-serif; background-color: #F9F8F6; color: #2D3748; }
         .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); }
-        .flow-node { transition: all 0.3s ease; cursor: pointer; }
-        .flow-node:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border-color: #319795; }
+        .chart-container { position: relative; height: 350px; width: 100%; }
+        .step-card { transition: all 0.3s ease; }
+        .step-card:hover { transform: translateY(-5px); }
     </style>
 </head>
 <body class="antialiased">
 
     <nav class="fixed w-full z-50 glass-panel border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
-            <span class="text-xl font-bold text-teal-700">AlzheimerPredict ML 🧠</span>
-            <div class="hidden md:flex space-x-8">
-                <a href="#overview" class="hover:text-teal-600 font-medium">Overview</a>
-                <a href="#eda" class="hover:text-teal-600 font-medium">EDA Insights</a>
-                <a href="#pipeline" class="hover:text-teal-600 font-medium">ML Pipeline</a>
-                <a href="#results" class="hover:text-teal-600 font-medium">Results</a>
+            <span class="text-xl font-bold text-teal-700">Alzheimer Analysis 🧠</span>
+            <div class="hidden md:flex space-x-8 text-sm font-medium text-gray-600">
+                <a href="#overview" class="hover:text-teal-600">Overview</a>
+                <a href="#pipeline" class="hover:text-teal-600">ML Pipeline</a>
+                <a href="#results" class="hover:text-teal-600">Insights</a>
+                <a href="#performance" class="hover:text-teal-600">Performance</a>
             </div>
         </div>
     </nav>
 
-    <header id="overview" class="pt-28 pb-16 px-4 max-w-7xl mx-auto text-center">
-        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
+    <header id="overview" class="pt-32 pb-16 px-4 max-w-7xl mx-auto text-center">
+        <div class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest text-teal-700 uppercase bg-teal-50 rounded-full border border-teal-100">
+            Term Project Report · Big Data Analytics Course · December 2025
+        </div>
+        <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
             Alzheimer’s Disease Prediction <br>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">Comprehensive Data Analysis Using ML</span>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-indigo-600">Using Machine Learning</span>
         </h1>
-        <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            การใช้เทคนิค Machine Learning เพื่อวิเคราะห์รูปแบบข้อมูลทางคลินิกและสร้างโมเดลทำนายโรคอัลไซเมอร์ในระยะเริ่มต้น
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-4">
+            Identifying key predictive features for early detection and disease severity analysis using clinical and behavioral data.
         </p>
-        <div class="flex flex-wrap justify-center gap-4">
-            <div class="bg-white px-6 py-3 rounded-full shadow-sm border text-sm font-semibold">📊 2,149 Patient Records</div>
-            <div class="bg-white px-6 py-3 rounded-full shadow-sm border text-sm font-semibold">🧬 35 Clinical Features</div>
-            <div class="bg-white px-6 py-3 rounded-full shadow-sm border text-sm font-semibold">🤖 Predictive Modeling</div>
+        <p class="text-sm font-medium text-gray-500 mb-10 italic">
+            Under the advisement of <span class="text-gray-800 font-semibold">Prof. Chung Yung</span> and TA <span class="text-gray-800 font-semibold">Demiah Kisla Charlery</span>.
+        </p>
+        
+        <div class="flex justify-center gap-6 text-sm">
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 min-w-[150px]">
+                <span class="block text-2xl font-bold text-teal-600">2,149</span>
+                <span class="text-gray-500 uppercase tracking-wider text-[10px] font-bold">Total Records</span>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 min-w-[150px]">
+                <span class="block text-2xl font-bold text-indigo-600">35</span>
+                <span class="text-gray-500 uppercase tracking-wider text-[10px] font-bold">Clinical Features</span>
+            </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 pb-24 space-y-20">
-
-        <section id="eda" class="scroll-mt-24">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold">Exploratory Data Analysis (EDA)</h2>
-                <p class="mt-2 text-gray-600 text-lg">ค้นหาปัจจัยสำคัญที่มีผลต่อการวินิจฉัยโรค</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                    <h3 class="text-xl font-bold mb-4">Target Distribution</h3>
-                    <div class="chart-container">
-                        <canvas id="targetChart"></canvas>
-                    </div>
-                    <p class="text-sm text-gray-500 mt-4">
-                        ข้อมูลประกอบด้วยผู้ป่วยที่ไม่ได้เป็นอัลไซเมอร์ (64.6%) และผู้ป่วยที่เป็นโรค (35.4%) สะท้อนถึง Class Imbalance ระดับปานกลาง
-                    </p>
+    <section id="pipeline" class="py-16 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 uppercase tracking-widest">My Framework</h2>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 text-center">
+                <div class="step-card bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                    <div class="text-teal-400 text-xs font-bold mb-2 uppercase">01 Acquisition</div>
+                    <p class="font-semibold text-sm">Dataset Collection</p>
                 </div>
-
-                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-                    <h3 class="text-xl font-bold mb-4">Key Clinical Indicators</h3>
-                    <div class="space-y-4">
-                        <div class="p-4 bg-teal-50 rounded-xl border border-teal-100">
-                            <span class="font-bold text-teal-800">MMSE Score:</span> กลุ่มผู้ป่วยมีคะแนนต่ำกว่าปกติอย่างมีนัยสำคัญ (p < 0.001)
-                        </div>
-                        <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
-                            <span class="font-bold text-blue-800">Functional Assessment:</span> ความสามารถในการทำงานลดลงอย่างชัดเจนในกลุ่มผู้ป่วย
-                        </div>
-                        <div class="p-4 bg-orange-50 rounded-xl border border-orange-100">
-                            <span class="font-bold text-orange-800">ADL:</span> การใช้ชีวิตประจำวัน (Activities of Daily Living) แสดงความแตกต่างที่สำคัญ
-                        </div>
-                    </div>
+                <div class="step-card bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                    <div class="text-teal-400 text-xs font-bold mb-2 uppercase">02 EDA</div>
+                    <p class="font-semibold text-sm">Data Cleaning</p>
+                </div>
+                <div class="step-card bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                    <div class="text-teal-400 text-xs font-bold mb-2 uppercase">03 Selection</div>
+                    <p class="font-semibold text-sm">Feature Engineering</p>
+                </div>
+                <div class="step-card bg-teal-600 p-6 rounded-2xl shadow-lg">
+                    <div class="text-white text-xs font-bold mb-2 uppercase">04 Training</div>
+                    <p class="font-semibold text-sm">ML Modeling</p>
+                </div>
+                <div class="step-card bg-indigo-600 p-6 rounded-2xl shadow-lg">
+                    <div class="text-white text-xs font-bold mb-2 uppercase">Result</div>
+                    <p class="font-semibold text-sm">Model Evaluation</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="pipeline" class="scroll-mt-24">
-            <div class="bg-slate-900 text-white p-12 rounded-3xl shadow-xl">
-                <h2 class="text-3xl font-bold text-center mb-12">MY FRAMEWORK</h2>
-                <div class="max-w-4xl mx-auto space-y-8">
-                    <div class="flex flex-col md:flex-row items-center gap-4">
-                        <div class="flow-node bg-slate-700 p-6 rounded-2xl w-full text-center" onclick="alert('Data Cleaning & Exploration')">
-                            <span class="block text-teal-400 font-bold">01</span> Acquisition & Cleaning
-                        </div>
-                        <div class="text-2xl hidden md:block">➡️</div>
-                        <div class="flow-node bg-slate-700 p-6 rounded-2xl w-full text-center" onclick="alert('Analysis of Patterns')">
-                            <span class="block text-teal-400 font-bold">02</span> Exploratory Analysis (EDA)
-                        </div>
-                        <div class="text-2xl hidden md:block">➡️</div>
-                        <div class="flow-node bg-slate-700 p-6 rounded-2xl w-full text-center" onclick="alert('Selecting best features')">
-                            <span class="block text-teal-400 font-bold">03</span> Feature Selection
-                        </div>
-                    </div>
-                    <div class="flex justify-center">
-                        <div class="text-2xl">⬇️</div>
-                    </div>
-                    <div class="flex flex-col md:flex-row items-center gap-4 justify-center">
-                        <div class="flow-node bg-teal-600 p-6 rounded-2xl w-64 text-center">
-                            <span class="block text-white font-bold">04</span> Machine Learning Training
-                        </div>
-                        <div class="text-2xl hidden md:block">➡️</div>
-                        <div class="flow-node bg-indigo-600 p-6 rounded-2xl w-64 text-center">
-                            🏆 BEST ML MODEL
-                        </div>
-                    </div>
+    <section id="results" class="py-20 max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold">Key Predictive Features</h2>
+            <p class="text-gray-600 italic">Analysis via Random Forest Gini Importance</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="chart-container bg-white p-6 rounded-3xl border border-gray-100">
+                <canvas id="featureChart"></canvas>
+            </div>
+            <div class="space-y-4">
+                <div class="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                    <h4 class="font-bold text-teal-700 mb-1">Functional Assessment</h4>
+                    <p class="text-sm text-gray-600">The most influential feature in the prediction model.</p>
+                </div>
+                <div class="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                    <h4 class="font-bold text-teal-700 mb-1">Activities of Daily Living (ADL)</h4>
+                    <p class="text-sm text-gray-600">Strong indicator of cognitive decline and disease status.</p>
+                </div>
+                <div class="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm">
+                    <h4 class="font-bold text-teal-700 mb-1">MMSE Score</h4>
+                    <p class="text-sm text-gray-600">Standard clinical metric used for dementia screening.</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section id="results" class="scroll-mt-24">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold">Model Comparative Analysis</h2>
-                <p class="mt-2 text-gray-600">เปรียบเทียบประสิทธิภาพของโมเดลแต่ละประเภท</p>
-            </div>
-            <div class="grid md:grid-cols-2 gap-12 items-center bg-white p-8 rounded-3xl border">
-                <div class="chart-container">
-                    <canvas id="performanceChart"></canvas>
+    <section id="performance" class="py-20 bg-gray-50 border-t border-b">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold mb-4">Random Forest Performance</h2>
+            <p class="text-gray-600 mb-12 uppercase tracking-widest text-xs font-bold">Best Model Metrics</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-3xl border border-gray-200">
+                    <div class="text-4xl font-extrabold text-teal-600 mb-2">95.43%</div>
+                    <div class="text-[10px] uppercase tracking-widest font-bold text-gray-400">Accuracy Score</div>
                 </div>
-                <div class="space-y-6">
-                    <div class="border-l-4 border-teal-500 pl-4 bg-teal-50 py-4 rounded-r-xl">
-                        <h4 class="text-lg font-bold text-teal-800">Gradient Boosting Models</h4>
-                        <p class="text-sm text-gray-700 mt-2">
-                            โมเดลกลุ่ม Boosting (XGBoost, GradientBoosting) ให้ประสิทธิภาพสูงสุดเนื่องจากสามารถจัดการกับความสัมพันธ์ที่ซับซ้อนของปัจจัยทางคลินิกได้ดี
-                        </p>
-                    </div>
-                    <div class="border-l-4 border-gray-400 pl-4 py-4">
-                        <h4 class="text-lg font-bold text-gray-800">Linear Models (Baseline)</h4>
-                        <p class="text-sm text-gray-600 mt-2">
-                            Logistic Regression ทำหน้าที่เป็น Baseline โดยให้ความแม่นยำพื้นฐานแต่ยังไม่สามารถจับรูปแบบ Non-linear ได้เท่ากับ Tree-based models
-                        </p>
-                    </div>
+                <div class="bg-white p-8 rounded-3xl border border-gray-200 shadow-xl shadow-indigo-100">
+                    <div class="text-4xl font-extrabold text-indigo-600 mb-2">97.48%</div>
+                    <div class="text-[10px] uppercase tracking-widest font-bold text-gray-400">ROC-AUC Score</div>
+                </div>
+                <div class="bg-white p-8 rounded-3xl border border-gray-200">
+                    <div class="text-4xl font-extrabold text-pink-600 mb-2">95.39%</div>
+                    <div class="text-[10px] uppercase tracking-widest font-bold text-gray-400">F1-Measure</div>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
-    <footer class="bg-gray-900 text-gray-400 py-8 text-center text-sm">
-        <p>Alzheimer's Disease Prediction and Comprehensive Data Analysis Showcase.</p>
-        <p class="mt-2">Developed by Keira S J. based on Repository Data</p>
+    <footer class="py-12 text-center text-gray-400 text-xs border-t bg-white">
+        <p class="font-bold text-gray-600 uppercase tracking-widest mb-3">National Dong Hwa University</p>
+        <p class="mb-1">Presented by <span class="text-gray-800 font-medium text-sm">Supharada Jundok (411121394)</span></p>
+        <p class="mb-4">Advisors: Prof. Chung Yung & TA Demiah Kisla Charlery</p>
+        <p class="mt-4 pt-4 border-t border-gray-100 max-w-xs mx-auto">© 2025 Alzheimer's Prediction Project</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Target Distribution Chart
-            const ctxTarget = document.getElementById('targetChart').getContext('2d');
-            new Chart(ctxTarget, {
-                type: 'pie',
+            const ctx = document.getElementById('featureChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
                 data: {
-                    labels: ['Non-Alzheimer (0)', 'Alzheimer (1)'],
+                    labels: ['Functional Assessment', 'ADL', 'MMSE', 'Memory Complaints', 'Behavioral Problems'],
                     datasets: [{
-                        data: [1389, 760], // Based on value_counts()
-                        backgroundColor: ['#CBD5E0', '#0D9488'],
-                        borderWidth: 0
+                        label: 'Gini Importance',
+                        data: [0.35, 0.22, 0.15, 0.08, 0.05],
+                        backgroundColor: '#0D9488',
+                        borderRadius: 6
                     }]
                 },
-                options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-            });
-
-            // Performance Comparison Radar (Mock Data based on Model List)
-            const ctxPerf = document.getElementById('performanceChart').getContext('2d');
-            new Chart(ctxPerf, {
-                type: 'radar',
-                data: {
-                    labels: ['Accuracy', 'F1-Score', 'ROC-AUC', 'Precision', 'Recall'],
-                    datasets: [{
-                        label: 'Gradient Boosting (Best)',
-                        data: [95, 94, 98, 93, 95],
-                        backgroundColor: 'rgba(13, 148, 136, 0.2)',
-                        borderColor: '#0D9488',
-                        pointBackgroundColor: '#0D9488'
-                    }, {
-                        label: 'Logistic Regression',
-                        data: [82, 80, 85, 81, 79],
-                        backgroundColor: 'rgba(156, 163, 175, 0.2)',
-                        borderColor: '#9CA3AF',
-                        pointBackgroundColor: '#9CA3AF'
-                    }]
-                },
-                options: { maintainAspectRatio: false, scales: { r: { min: 0, max: 100 } } }
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { beginAtZero: true } }
+                }
             });
         });
     </script>
