@@ -11,8 +11,7 @@
         body { font-family: 'Inter', sans-serif; background-color: #F9F8F6; color: #2D3748; }
         .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); }
         .chart-container { position: relative; height: 350px; width: 100%; }
-        .step-card { transition: all 0.3s ease; }
-        .step-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.1); }
+        .step-card { transition: all 0.3s ease; border: 1px solid rgba(0, 0, 0, 0.05); }
         .model-chip { background-color: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.2); }
     </style>
 </head>
@@ -21,19 +20,19 @@
     <nav class="fixed w-full z-50 glass-panel border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
             <span class="text-xl font-bold text-teal-700">Alzheimer Analysis 🧠</span>
-            <div class="hidden md:flex space-x-8 text-sm font-medium text-gray-600">
+            <div class="hidden md:flex space-x-6 text-[13px] font-semibold text-gray-500 uppercase tracking-wider">
                 <a href="#overview" class="hover:text-teal-600">Overview</a>
                 <a href="#framework" class="hover:text-teal-600">Framework</a>
-                <a href="#models" class="hover:text-teal-600">Experiments</a>
+                <a href="#models" class="hover:text-teal-600">Models</a>
                 <a href="#insights" class="hover:text-teal-600">Insights</a>
                 <a href="#performance" class="hover:text-teal-600">Performance</a>
-                <a href="#document" class="hover:text-teal-600">Presentation</a>
+                <a href="#document" class="hover:text-teal-600">Document</a>
             </div>
         </div>
     </nav>
 
     <header id="overview" class="pt-32 pb-16 px-4 max-w-7xl mx-auto text-center">
-        <div class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest text-teal-700 uppercase bg-teal-50 rounded-full border border-teal-100">
+        <div class="inline-block px-4 py-1.5 mb-6 text-[10px] font-bold tracking-[0.2em] text-teal-700 uppercase bg-teal-50 rounded-full border border-teal-100">
             Term Project Report · Big Data Analytics Course · December 2025
         </div>
         <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
@@ -43,86 +42,64 @@
         <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-4">
             Identifying key predictive features for early detection and disease severity analysis using clinical and behavioral data.
         </p>
-        <p class="text-sm font-medium text-gray-500 mb-10 italic">
-            Under the advisement of <span class="text-gray-800 font-semibold">Prof. Chung Yung</span> and TA <span class="text-gray-800 font-semibold">Demiah Kisla Charlery</span>.
+        <p class="text-sm font-medium text-gray-400 mb-10 italic">
+            Under the advisement of <span class="text-gray-700 font-semibold">Prof. Chung Yung</span> and TA <span class="text-gray-700 font-semibold">Demiah Kisla Charlery</span>.
         </p>
-        
-        <div class="flex justify-center gap-6 text-sm">
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 min-w-[150px]">
-                <span class="block text-2xl font-bold text-teal-600">2,149</span>
-                <span class="text-gray-500 uppercase tracking-wider text-[10px] font-bold">Total Records</span>
-            </div>
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 min-w-[150px]">
-                <span class="block text-2xl font-bold text-indigo-600">35</span>
-                <span class="text-gray-500 uppercase tracking-wider text-[10px] font-bold">Clinical Features</span>
-            </div>
-        </div>
     </header>
 
-    <section id="framework" class="py-20 bg-slate-900 text-white scroll-mt-16">
+    <section id="framework" class="py-16 bg-white border-y border-gray-100 scroll-mt-16">
         <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center mb-16 uppercase tracking-widest text-teal-300">My Framework</h2>
-            <div class="max-w-5xl mx-auto space-y-10">
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
-                    <div class="step-card bg-slate-800 p-6 rounded-2xl border border-slate-700 text-center col-span-1">
-                        <div class="text-teal-400 text-xs font-bold mb-2 uppercase">STEP 01</div>
-                        <p class="font-semibold text-sm">Dataset Acquisition</p>
-                    </div>
-                    <div class="text-teal-500 text-4xl text-center md:col-span-1 hidden md:block">➡</div>
-                    <div class="step-card bg-slate-800 p-6 rounded-2xl border border-slate-700 text-center md:col-span-1">
-                        <div class="text-teal-400 text-xs font-bold mb-2 uppercase">STEP 02</div>
-                        <p class="font-semibold text-sm">Data Cleaning</p>
-                    </div>
-                    <div class="text-teal-500 text-4xl text-center md:col-span-1 hidden md:block">➡</div>
-                    <div class="step-card bg-slate-800 p-6 rounded-2xl border border-slate-700 text-center md:col-span-1">
-                        <div class="text-teal-400 text-xs font-bold mb-2 uppercase">STEP 03</div>
-                        <p class="font-semibold text-sm">Data Exploration (EDA)</p>
-                    </div>
+            <h2 class="text-2xl font-bold text-center mb-12 uppercase tracking-widest text-gray-800 underline underline-offset-8 decoration-teal-500">My Framework</h2>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 max-w-6xl mx-auto">
+                <div class="step-card bg-gray-50 p-6 rounded-xl text-center w-full md:w-48">
+                    <div class="text-teal-600 text-xs font-bold mb-1">01</div>
+                    <p class="font-bold text-xs uppercase tracking-tight">Dataset Acquisition</p>
                 </div>
+                <div class="hidden md:block text-gray-300 text-2xl">→</div>
                 
-                <div class="flex justify-center md:justify-end md:pr-10">
-                    <div class="text-teal-500 text-4xl">⬇</div>
+                <div class="step-card bg-gray-50 p-6 rounded-xl text-center w-full md:w-48">
+                    <div class="text-teal-600 text-xs font-bold mb-1">02</div>
+                    <p class="font-bold text-xs uppercase tracking-tight">Data Exploration and Cleaning</p>
                 </div>
+                <div class="hidden md:block text-gray-300 text-2xl">→</div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center flex-row-reverse">
-                    <div class="step-card bg-slate-800 p-6 rounded-2xl border border-slate-700 text-center md:col-start-5 md:col-span-1">
-                        <div class="text-teal-400 text-xs font-bold mb-2 uppercase">STEP 04</div>
-                        <p class="font-semibold text-sm">Feature Selection</p>
-                    </div>
-                    <div class="text-teal-500 text-4xl text-center md:col-start-4 md:col-span-1 hidden md:block">➡</div>
-                    <div class="step-card bg-slate-800 p-6 rounded-2xl border border-slate-700 text-center md:col-start-3 md:col-span-1">
-                        <div class="text-teal-400 text-xs font-bold mb-2 uppercase">STEP 05</div>
-                        <p class="font-semibold text-sm">Machine Learning Training</p>
-                    </div>
-                    <div class="text-teal-500 text-4xl text-center md:col-start-2 md:col-span-1 hidden md:block">➡</div>
-                    <div class="step-card bg-indigo-600 p-6 rounded-2xl shadow-lg shadow-indigo-900/30 text-center md:col-start-1 md:col-span-1">
-                        <div class="text-white text-xs font-bold mb-2 uppercase">RESULT</div>
-                        <p class="font-semibold text-sm">Best Model Evaluation</p>
-                    </div>
+                <div class="step-card bg-gray-50 p-6 rounded-xl text-center w-full md:w-48">
+                    <div class="text-teal-600 text-xs font-bold mb-1">03</div>
+                    <p class="font-bold text-xs uppercase tracking-tight">Exploratory Data Analysis (EDA)</p>
+                </div>
+                <div class="hidden md:block text-gray-300 text-2xl">→</div>
+                
+                <div class="step-card bg-gray-50 p-6 rounded-xl text-center w-full md:w-48">
+                    <div class="text-teal-600 text-xs font-bold mb-1">04</div>
+                    <p class="font-bold text-xs uppercase tracking-tight">Feature Selection</p>
+                </div>
+                <div class="hidden md:block text-gray-300 text-2xl">→</div>
+                
+                <div class="step-card bg-teal-600 p-6 rounded-xl text-center w-full md:w-48 shadow-lg shadow-teal-100">
+                    <div class="text-white text-xs font-bold mb-1">05</div>
+                    <p class="font-bold text-xs uppercase tracking-tight text-white">Machine Learning Modeling</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="models" class="py-20 bg-gray-50 border-b border-gray-100 scroll-mt-16">
+    <section id="models" class="py-20 bg-gray-50 scroll-mt-16">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-4">Comprehensive Model Evaluation</h2>
-            <p class="text-gray-600 mb-12">Comparative analysis conducted with **11 Machine Learning Models**</p>
-            <div class="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto text-sm">
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-full">Logistic Regression</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-full">Decision Tree</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-full">Random Forest (Baseline)</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-full">Gradient Boosting (Baseline)</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-full">Support Vector Machine (SVM)</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-full">Linear SVC</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-full">Naive Bayes</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-full">AdaBoost</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-full">Bagging</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-full">Extra Trees</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-full">Artificial Neural Network (ANN)</span>
-            </div>
-            <div class="mt-12 text-gray-500 text-sm italic">
-                All models were trained and validated to select the top-performing candidate.
+            <h2 class="text-3xl font-bold mb-4">Experimental Setup</h2>
+            <p class="text-gray-600 mb-12">Comparative analysis conducted with **11 Machine Learning Models** to identify the most robust predictor.</p>
+            <div class="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
+                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Logistic Regression</span>
+                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Decision Tree</span>
+                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Random Forest</span>
+                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Gradient Boosting</span>
+                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">SVM</span>
+                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Linear SVC</span>
+                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Naive Bayes</span>
+                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">AdaBoost</span>
+                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Bagging</span>
+                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Extra Trees</span>
+                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Artificial Neural Network</span>
             </div>
         </div>
     </section>
@@ -130,64 +107,67 @@
     <section id="insights" class="py-20 max-w-7xl mx-auto px-4 scroll-mt-16">
         <div class="text-center mb-12">
             <h2 class="text-3xl font-bold">Key Predictive Features</h2>
-            <p class="text-gray-600 italic">Analysis via Random Forest Gini Importance</p>
+            <p class="text-gray-600 italic">Identified via Random Forest Gini Importance</p>
         </div>
         <div class="grid md:grid-cols-2 gap-12 items-center">
-            <div class="chart-container bg-white p-6 rounded-3xl border border-gray-100">
+            <div class="chart-container bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
                 <canvas id="featureChart"></canvas>
             </div>
             <div class="space-y-4">
-                <div class="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                    <h4 class="font-bold text-teal-700 mb-1">Functional Assessment</h4>
-                    <p class="text-sm text-gray-600">The most influential feature in the prediction model.</p>
+                <div class="p-5 bg-white rounded-2xl border border-gray-100">
+                    <h4 class="font-bold text-teal-700 text-sm mb-1 uppercase tracking-wider">Functional Assessment</h4>
+                    <p class="text-[13px] text-gray-500">The primary driver for diagnosis prediction in the final model.</p>
                 </div>
-                <div class="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                    <h4 class="font-bold text-teal-700 mb-1">Activities of Daily Living (ADL)</h4>
-                    <p class="text-sm text-gray-600">Strong indicator of cognitive decline and disease status.</p>
+                <div class="p-5 bg-white rounded-2xl border border-gray-100">
+                    <h4 class="font-bold text-teal-700 text-sm mb-1 uppercase tracking-wider">ADL Index</h4>
+                    <p class="text-[13px] text-gray-500">Activities of Daily Living scores show a strong correlation with disease presence.</p>
                 </div>
-                <div class="p-5 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                    <h4 class="font-bold text-teal-700 mb-1">MMSE Score</h4>
-                    <p class="text-sm text-gray-600">Standard clinical metric used for dementia screening.</p>
+                <div class="p-5 bg-white rounded-2xl border border-gray-100">
+                    <h4 class="font-bold text-teal-700 text-sm mb-1 uppercase tracking-wider">MMSE Score</h4>
+                    <p class="text-[13px] text-gray-500">Clinical cognitive evaluation remain a vital predictor for Alzheimer's.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="performance" class="py-20 bg-gray-50 border-t border-b scroll-mt-16">
+    <section id="performance" class="py-20 bg-slate-900 text-white scroll-mt-16">
         <div class="max-w-7xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-4">Gradient Boosting Performance</h2>
-            <p class="text-gray-600 mb-12 uppercase tracking-widest text-xs font-bold">Best Model Metrics</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-3xl border border-gray-200">
-                    <div class="text-4xl font-extrabold text-teal-600 mb-2">95.43%</div>
-                    <div class="text-[10px] uppercase tracking-widest font-bold text-gray-400">Accuracy Score</div>
+            <h2 class="text-3xl font-bold mb-4 text-teal-400">Model Performance</h2>
+            <p class="text-gray-400 mb-12 text-sm uppercase tracking-widest">Random Forest Results</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700">
+                    <div class="text-4xl font-extrabold text-white mb-2">95.43%</div>
+                    <div class="text-[10px] uppercase tracking-[0.2em] font-bold text-teal-500">Accuracy</div>
                 </div>
-                <div class="bg-white p-8 rounded-3xl border border-gray-200 shadow-xl shadow-indigo-100">
-                    <div class="text-4xl font-extrabold text-indigo-600 mb-2">97.48%</div>
-                    <div class="text-[10px] uppercase tracking-widest font-bold text-gray-400">ROC-AUC Score</div>
+                <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700">
+                    <div class="text-4xl font-extrabold text-white mb-2">97.48%</div>
+                    <div class="text-[10px] uppercase tracking-[0.2em] font-bold text-teal-500">ROC-AUC</div>
                 </div>
-                <div class="bg-white p-8 rounded-3xl border border-gray-200">
-                    <div class="text-4xl font-extrabold text-pink-600 mb-2">95.39%</div>
-                    <div class="text-[10px] uppercase tracking-widest font-bold text-gray-400">F1-Measure</div>
+                <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700">
+                    <div class="text-4xl font-extrabold text-white mb-2">95.39%</div>
+                    <div class="text-[10px] uppercase tracking-[0.2em] font-bold text-teal-500">F1-Score</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="document" class="py-20 max-w-7xl mx-auto px-4 scroll-mt-16 text-center">
-        <h2 class="text-3xl font-bold mb-12 uppercase tracking-widest">Presentation Document</h2>
-        <div class="aspect-[16/9] w-full border border-gray-200 rounded-3xl overflow-hidden shadow-inner">
-            <iframe src="presentation_note_compressed (2).pdf" width="100%" height="100%" class="border-none" title="Project Presentation">
-                This browser does not support PDFs. Please download the PDF to view it: <a href="presentation_note_compressed.pdf">Download PDF</a>
+    <section id="document" class="py-20 max-w-7xl mx-auto px-4 scroll-mt-16">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold uppercase tracking-widest text-gray-800">Presentation Document</h2>
+            <p class="text-gray-500 mt-2 text-sm">Full analysis and detailed methodology</p>
+        </div>
+        <div class="aspect-[16/9] w-full border border-gray-200 rounded-2xl overflow-hidden shadow-2xl">
+            <iframe src="presentation_note_compressed (2).pdf" width="100%" height="100%" class="border-none">
+                <p>Your browser does not support PDFs. <a href="presentation_note_compressed (2).pdf">Download PDF</a></p>
             </iframe>
         </div>
     </section>
 
-    <footer class="py-12 text-center text-gray-400 text-xs border-t bg-white">
-        <p class="font-bold text-gray-600 uppercase tracking-widest mb-3">National Dong Hwa University</p>
-        <p class="mb-1">Presented by <span class="text-gray-800 font-medium text-sm">Supharada Jundok (411121394)</span></p>
-        <p class="mb-4">Advisors: Prof. Chung Yung & TA Demiah Kisla Charlery</p>
-        <p class="mt-4 pt-4 border-t border-gray-100 max-w-xs mx-auto">© 2025 Alzheimer's Prediction Project</p>
+    <footer class="py-12 text-center text-gray-400 text-[11px] border-t bg-white">
+        <p class="font-bold text-gray-600 uppercase tracking-[0.3em] mb-4 text-[10px]">National Dong Hwa University</p>
+        <p class="mb-1 uppercase tracking-wider text-gray-500">Presented by <span class="text-gray-900 font-bold">Supharada Jundok (411121394)</span></p>
+        <p class="mb-1 tracking-wide">Advisors: Prof. Chung Yung & TA Demiah Kisla Charlery</p>
+        <p class="mt-6 pt-6 border-t border-gray-50 max-w-xs mx-auto italic">© 2025 Alzheimer's Prediction Project</p>
     </footer>
 
     <script>
@@ -196,12 +176,12 @@
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Functional Assessment', 'ADL', 'MMSE', 'Memory Complaints', 'Behavioral Problems'],
+                    labels: ['Functional Assessment', 'ADL Index', 'MMSE', 'Memory Complaints', 'Behavioral Problems'],
                     datasets: [{
-                        label: 'Gini Importance',
+                        label: 'Relative Importance',
                         data: [0.35, 0.22, 0.15, 0.08, 0.05],
                         backgroundColor: '#0D9488',
-                        borderRadius: 6
+                        borderRadius: 4
                     }]
                 },
                 options: {
@@ -209,7 +189,10 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: { x: { beginAtZero: true } }
+                    scales: { 
+                        x: { beginAtZero: true, grid: { display: false } },
+                        y: { grid: { display: false } }
+                    }
                 }
             });
         });
