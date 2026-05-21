@@ -1,201 +1,1265 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alzheimer's Disease Prediction - Project Showcase</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #F9F8F6; color: #2D3748; }
-        .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); }
-        .chart-container { position: relative; height: 350px; width: 100%; }
-        .step-card { transition: all 0.3s ease; border: 1px solid rgba(0, 0, 0, 0.05); }
-        .model-chip { background-color: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.2); }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alzheimer's Disease Prediction — Supharada Jundok</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #08090d;
+      --bg2:      #0e1117;
+      --bg3:      #141821;
+      --border:   rgba(255,255,255,0.06);
+      --border2:  rgba(255,255,255,0.12);
+      --text:     #dde3ef;
+      --muted:    #7a8799;
+      --dim:      #3d4858;
+      --teal:     #4fd1c5;
+      --teal2:    #81e6d9;
+      --indigo:   #7c8fe8;
+      --rose:     #f6a0b0;
+      --amber:    #f6cf6a;
+      --glow-t:   rgba(79,209,197,0.15);
+      --glow-i:   rgba(124,143,232,0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 15px;
+      overflow-x: hidden;
+    }
+
+    /* ── Grain overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── Typography ── */
+    .serif { font-family: 'Playfair Display', Georgia, serif; }
+    .mono  { font-family: 'DM Mono', monospace; }
+
+    h1, h2, h3 { font-family: 'Playfair Display', serif; font-weight: 400; line-height: 1.15; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(8,9,13,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--teal);
+      letter-spacing: 0.08em;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-logo::before {
+      content: '';
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--teal);
+      animation: breathe 2.5s ease-in-out infinite;
+    }
+    @keyframes breathe { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--teal); }
+
+    /* ── Hero ── */
+    #overview {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 120px 40px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    #overview::before {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, var(--glow-t) 0%, transparent 65%);
+      top: -100px; right: -200px;
+      pointer-events: none;
+    }
+    #overview::after {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, var(--glow-i) 0%, transparent 65%);
+      bottom: 0; left: -150px;
+      pointer-events: none;
+    }
+
+    .hero-inner { max-width: 900px; position: relative; z-index: 1; }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      color: var(--teal);
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      padding: 6px 14px;
+      border: 1px solid rgba(79,209,197,0.25);
+      border-radius: 3px;
+    }
+    .eyebrow::before {
+      content: '';
+      width: 20px; height: 1px;
+      background: var(--teal); opacity: 0.6;
+    }
+
+    .hero-title {
+      font-size: clamp(38px, 5.5vw, 72px);
+      color: #f0f4ff;
+      margin-bottom: 12px;
+    }
+    .hero-title em {
+      font-style: italic;
+      background: linear-gradient(105deg, var(--teal) 0%, var(--indigo) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 560px;
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+
+    .hero-meta {
+      font-size: 12px;
+      color: var(--dim);
+      font-family: 'DM Mono', monospace;
+      margin-bottom: 48px;
+    }
+    .hero-meta span { color: var(--muted); }
+    .hero-name-link {
+      color: var(--teal2);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .hero-name-link:hover { color: var(--teal); }
+
+    .hero-stats {
+      display: flex; gap: 48px; flex-wrap: wrap;
+    }
+    .hstat {
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .hstat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      color: #f0f4ff;
+      line-height: 1;
+    }
+    .hstat-num sup { font-size: 16px; color: var(--teal); vertical-align: super; }
+    .hstat-label {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      color: var(--dim);
+      letter-spacing: 0.1em;
+    }
+    .hstat-divider {
+      width: 1px;
+      background: var(--border2);
+      align-self: stretch;
+    }
+
+    /* ── Section base ── */
+    section { padding: 96px 40px; }
+    .section-wrap { max-width: 1000px; margin: 0 auto; }
+
+    .section-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-tag::after { content: ''; flex: 0 0 40px; height: 1px; background: var(--border2); }
+
+    .section-title {
+      font-size: clamp(26px, 3vw, 38px);
+      color: #f0f4ff;
+      margin-bottom: 14px;
+    }
+    .section-desc {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 560px;
+      font-weight: 300;
+    }
+
+    /* ── Framework ── */
+    #framework { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .flow-steps {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin-top: 52px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .flow-step {
+      flex: 1;
+      min-width: 150px;
+      padding: 24px 20px;
+      border: 1px solid var(--border);
+      position: relative;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .flow-step:not(:last-child) { border-right: none; }
+    .flow-step:first-child { border-radius: 10px 0 0 10px; }
+    .flow-step:last-child { border-radius: 0 10px 10px 0; }
+    .flow-step:hover { background: rgba(255,255,255,0.02); border-color: var(--border2); }
+    .flow-step.active {
+      background: rgba(79,209,197,0.06);
+      border-color: rgba(79,209,197,0.3) !important;
+    }
+    .flow-step.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--teal), var(--indigo));
+      border-radius: 0 0 2px 2px;
+    }
+    .flow-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--teal);
+      margin-bottom: 10px;
+      letter-spacing: 0.1em;
+    }
+    .flow-name {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      line-height: 1.4;
+      color: var(--text);
+    }
+    .flow-step.active .flow-name { color: var(--teal2); }
+
+    /* ── Models ── */
+    #models { background: var(--bg); }
+
+    .model-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 40px;
+    }
+    .model-chip {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      padding: 7px 16px;
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      color: var(--muted);
+      background: var(--bg2);
+      transition: all 0.2s;
+      cursor: default;
+    }
+    .model-chip:hover { border-color: rgba(79,209,197,0.4); color: var(--teal2); background: rgba(79,209,197,0.04); }
+    .model-chip.best {
+      border-color: rgba(79,209,197,0.45);
+      color: var(--teal);
+      background: rgba(79,209,197,0.07);
+    }
+
+    /* ── Insights / Features ── */
+    #insights { background: var(--bg2); border-top: 1px solid var(--border); }
+
+    .insights-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: start; margin-top: 52px; }
+
+    .chart-box {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 24px 20px;
+    }
+    .chart-box-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .chart-container { position: relative; height: 280px; width: 100%; }
+
+    .insights-stack { display: flex; flex-direction: column; gap: 24px; margin-top: 52px; }
+    .feature-cards-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    @media (max-width: 900px) { .feature-cards-row { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .feature-cards-row { grid-template-columns: 1fr; } }
+    .fcard {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 20px;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .fcard:hover { border-color: var(--border2); transform: translateX(4px); }
+    .fcard-rank {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--teal);
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+    .fcard-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .fcard-desc { font-size: 12px; color: var(--muted); font-weight: 300; line-height: 1.5; }
+
+    /* ── SHAP ── */
+    #shap { background: var(--bg); border-top: 1px solid var(--border); }
+
+    .shap-intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 48px;
+      margin-bottom: 48px;
+    }
+    .shap-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 22px 20px;
+      background: var(--bg2);
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .shap-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+    .shap-type {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--teal);
+      letter-spacing: 0.12em;
+      margin-bottom: 8px;
+    }
+    .shap-plot-name { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+    .shap-plot-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+    /* SHAP mini bar viz */
+    .shap-bars { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 24px 24px 16px; }
+    .shap-bars-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .sbar-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .sbar-row:last-child { border-bottom: none; }
+    .sbar-feat { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); width: 175px; flex-shrink: 0; }
+    .sbar-track { flex: 1; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; display: flex; }
+    .sbar-pos { height: 100%; border-radius: 3px; background: linear-gradient(90deg, rgba(79,209,197,0.45), rgba(79,209,197,0.85)); transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+    .sbar-neg { height: 100%; border-radius: 3px; background: linear-gradient(90deg, rgba(124,143,232,0.85), rgba(124,143,232,0.45)); transition: width 1.2s cubic-bezier(.4,0,.2,1); margin-left: auto; }
+    .sbar-val { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--dim); width: 48px; text-align: right; flex-shrink: 0; }
+
+    .shap-legend { display: flex; gap: 20px; margin-top: 14px; }
+    .sleg { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--dim); font-family: 'DM Mono', monospace; }
+    .sleg-dot { width: 10px; height: 6px; border-radius: 2px; }
+
+    /* ── Performance ── */
+    #performance { background: var(--bg2); border-top: 1px solid var(--border); }
+
+    .perf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 48px; }
+    .perf-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .perf-card:hover { transform: translateY(-3px); border-color: var(--border2); }
+    .perf-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: var(--line-color, linear-gradient(90deg, transparent, var(--teal), transparent));
+    }
+    .perf-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 44px;
+      color: #f0f4ff;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .perf-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+    .perf-sub { font-size: 11px; color: var(--dim); margin-top: 6px; }
+
+    .model-table-wrap {
+      margin-top: 48px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .mtable-header {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid var(--border);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .mtable-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      padding: 13px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      transition: background 0.15s;
+    }
+    .mtable-row:last-child { border-bottom: none; }
+    .mtable-row:hover { background: rgba(255,255,255,0.02); }
+    .mtable-row.winner {
+      background: rgba(79,209,197,0.05);
+    }
+    .mtable-row.winner .mname { color: var(--teal); font-weight: 500; }
+    .mname { display: flex; align-items: center; gap: 8px; }
+    .crown { font-size: 12px; }
+    .mval { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); align-self: center; }
+    .winner .mval { color: var(--teal); }
+
+    /* ── Document ── */
+    #document { background: var(--bg); border-top: 1px solid var(--border); }
+
+    .pdf-wrap {
+      margin-top: 40px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+    }
+    .pdf-wrap iframe { width: 100%; height: 100%; border: none; }
+
+    /* ── Footer ── */
+    footer {
+      padding: 56px 40px;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+      text-align: center;
+    }
+    .footer-uni {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 6px;
+    }
+    .footer-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: #f0f4ff;
+      margin-bottom: 6px;
+    }
+    .footer-team {
+      font-size: 10px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 6px;
+    }
+    .footer-name-link {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: #f0f4ff;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 6px;
+      border-bottom: 1px solid var(--border2);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-name-link:hover { color: var(--teal); border-color: rgba(79,209,197,0.4); }
+    .footer-meta { font-size: 12px; color: var(--dim); margin-bottom: 4px; font-family: 'DM Mono', monospace; }
+    .footer-copy {
+      font-size: 11px; color: var(--dim); margin-top: 32px;
+      display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+    }
+    .gh-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      color: var(--muted);
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      padding: 4px 10px;
+      text-decoration: none;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .gh-btn:hover { color: var(--teal); border-color: rgba(79,209,197,0.4); background: rgba(79,209,197,0.05); }
+
+    /* ── Model chart interactive ── */
+    .model-chart-box {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 24px;
+      margin-top: 48px;
+    }
+    .mc-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+    }
+    .mc-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px; color: var(--dim);
+      letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .mc-tabs { display: flex; gap: 4px; }
+    .mc-tab {
+      font-family: 'DM Mono', monospace; font-size: 10px;
+      padding: 5px 12px; border-radius: 4px; cursor: pointer;
+      border: 1px solid var(--border2); color: var(--muted);
+      background: transparent; transition: all 0.2s;
+    }
+    .mc-tab.active, .mc-tab:hover {
+      background: rgba(79,209,197,0.08);
+      border-color: rgba(79,209,197,0.35);
+      color: var(--teal);
+    }
+    .model-chart-container { position: relative; height: 320px; width: 100%; }
+
+
+    /* ── Language Switcher ── */
+    .lang-switcher { display: flex; gap: 2px; margin-left: 16px; }
+    .lang-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      padding: 4px 9px;
+      border-radius: 3px;
+      border: 1px solid var(--border2);
+      color: var(--dim);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-btn:hover { color: var(--muted); border-color: var(--border2); }
+    .lang-btn.active { color: var(--teal); border-color: rgba(79,209,197,0.4); background: rgba(79,209,197,0.07); }
+
+    /* ── Scroll-in animation ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: none; }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      section { padding: 64px 20px; }
+      #overview { padding: 100px 20px 60px; }
+      .insights-grid { grid-template-columns: 1fr; }
+      .perf-grid { grid-template-columns: 1fr; }
+      .shap-intro { grid-template-columns: 1fr; }
+      .hero-stats { gap: 24px; }
+      .hstat-divider { display: none; }
+      .mtable-header,
+      .mtable-row { grid-template-columns: 2fr 1fr 1fr; }
+      .mtable-header > *:last-child,
+      .mtable-row > *:last-child { display: none; }
+    }
+  </style>
 </head>
-<body class="antialiased">
+<body>
 
-    <nav class="fixed w-full z-50 glass-panel border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
-            <span class="text-xl font-bold text-teal-700">Alzheimer Analysis 🧠</span>
-            <div class="hidden md:flex space-x-6 text-[13px] font-semibold text-gray-500 uppercase tracking-wider">
-                <a href="#overview" class="hover:text-teal-600">Overview</a>
-                <a href="#framework" class="hover:text-teal-600">Framework</a>
-                <a href="#models" class="hover:text-teal-600">Models</a>
-                <a href="#insights" class="hover:text-teal-600">Insights</a>
-                <a href="#performance" class="hover:text-teal-600">Performance</a>
-                <a href="#document" class="hover:text-teal-600">Document</a>
-            </div>
-        </div>
-    </nav>
+<!-- ── Nav ── -->
+<nav>
+  <div class="nav-logo">Alzheimer's ML Project</div>
+  <div class="nav-links">
+    <a href="#overview" data-i18n="nav_overview">Overview</a>
+    <a href="#framework" data-i18n="nav_framework">Framework</a>
+    <a href="#models" data-i18n="nav_models">Models</a>
+    <a href="#insights" data-i18n="nav_insights">Insights</a>
+    <a href="#shap">SHAP</a>
+    <a href="#performance" data-i18n="nav_perf">Performance</a>
+    <a href="#document" data-i18n="nav_doc">Document</a>
+  </div>
+  <div class="lang-switcher">
+    <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+    <button class="lang-btn" onclick="setLang('th',this)">TH</button>
+    <button class="lang-btn" onclick="setLang('zh',this)">中文</button>
+  </div>
+</nav>
 
-    <header id="overview" class="pt-32 pb-16 px-4 max-w-7xl mx-auto text-center">
-        <div class="inline-block px-4 py-1.5 mb-6 text-[10px] font-bold tracking-[0.2em] text-teal-700 uppercase bg-teal-50 rounded-full border border-teal-100">
-            Term Project Report · Big Data Analytics Course · December 2025
-        </div>
-        <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
-            Alzheimer’s Disease Prediction <br>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-indigo-600">Using Machine Learning</span>
-        </h1>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-4">
-            Identifying key predictive features for early detection and disease severity analysis using clinical and behavioral data.
-        </p>
-        <p class="text-sm font-medium text-gray-400 mb-10 italic">
-            Under the advisement of <span class="text-gray-700 font-semibold">Prof. Chung Yung</span> and TA <span class="text-gray-700 font-semibold">Demiah Kisla Charlery</span>.
-        </p>
-    </header>
+<!-- ── Hero ── -->
+<section id="overview">
+  <div class="hero-inner fade-up visible">
+    <div class="eyebrow" data-i18n="eyebrow">Final Project · Big Data Analytics · December 2025</div>
+    <h1 class="hero-title">
+      <span data-i18n="hero_title_1">Alzheimer's Disease Prediction and</span><br>
+      <span data-i18n="hero_title_2">Comprehensive Data Analysis Using</span><br>
+      <em data-i18n="hero_title_3">Machine Learning</em>
+    </h1>
+    <p class="hero-sub">
+      <span data-i18n="hero_sub">Identifying key predictive features for early detection and disease severity analysis using clinical and behavioral data from 2,149 patients.</span>
+    </p>
+    <p class="hero-meta">
+      <a href="https://mato8q.github.io/imnotmato8q.github.io/" target="_blank" class="hero-name-link">Supharada Jundok
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-left:4px"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      </a><br>
+      <span data-i18n="hero_advisor">Advised by Prof. Chung Yung</span> &amp; TA <span>Demiah Kisla Charlery</span><br>
+      <span style="color:var(--dim);font-family:'DM Mono',monospace;font-size:12px">Department of Computer Science and Information Engineering&nbsp;·&nbsp;ภาควิชาวิทยาการคอมพิวเตอร์และวิศวกรรมสารสนเทศ&nbsp;·&nbsp;資訊工程學系</span>
+    </p>
+    <div class="hero-stats">
+      <div class="hstat">
+        <div class="hstat-num">96<sup>%</sup></div>
+        <div class="hstat-label" data-i18n="stat_acc">Test Accuracy</div>
+      </div>
+      <div class="hstat-divider"></div>
+      <div class="hstat">
+        <div class="hstat-num">11</div>
+        <div class="hstat-label" data-i18n="stat_models">Models Tested</div>
+      </div>
+      <div class="hstat-divider"></div>
+      <div class="hstat">
+        <div class="hstat-num">2,149</div>
+        <div class="hstat-label" data-i18n="stat_patients">Patient Records</div>
+      </div>
+      <div class="hstat-divider"></div>
+      <div class="hstat">
+        <div class="hstat-num">5</div>
+        <div class="hstat-label" data-i18n="stat_features">Features Selected</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <section id="framework" class="py-16 bg-white border-y border-gray-100 scroll-mt-16">
-        <div class="max-w-7xl mx-auto px-4">
-            <h2 class="text-2xl font-bold text-center mb-12 uppercase tracking-widest text-gray-800 underline underline-offset-8 decoration-teal-500">My Framework</h2>
-            
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4 max-w-6xl mx-auto">
-                <div class="step-card bg-gray-50 p-6 rounded-xl text-center w-full md:w-48">
-                    <div class="text-teal-600 text-xs font-bold mb-1">01</div>
-                    <p class="font-bold text-xs uppercase tracking-tight">Dataset Acquisition</p>
-                </div>
-                <div class="hidden md:block text-gray-300 text-2xl">→</div>
-                
-                <div class="step-card bg-gray-50 p-6 rounded-xl text-center w-full md:w-48">
-                    <div class="text-teal-600 text-xs font-bold mb-1">02</div>
-                    <p class="font-bold text-xs uppercase tracking-tight">Data Exploration and Cleaning</p>
-                </div>
-                <div class="hidden md:block text-gray-300 text-2xl">→</div>
-                
-                <div class="step-card bg-gray-50 p-6 rounded-xl text-center w-full md:w-48">
-                    <div class="text-teal-600 text-xs font-bold mb-1">03</div>
-                    <p class="font-bold text-xs uppercase tracking-tight">Exploratory Data Analysis (EDA)</p>
-                </div>
-                <div class="hidden md:block text-gray-300 text-2xl">→</div>
-                
-                <div class="step-card bg-gray-50 p-6 rounded-xl text-center w-full md:w-48">
-                    <div class="text-teal-600 text-xs font-bold mb-1">04</div>
-                    <p class="font-bold text-xs uppercase tracking-tight">Feature Selection</p>
-                </div>
-                <div class="hidden md:block text-gray-300 text-2xl">→</div>
-                
-                <div class="step-card bg-teal-600 p-6 rounded-xl text-center w-full md:w-48 shadow-lg shadow-teal-100">
-                    <div class="text-white text-xs font-bold mb-1">05</div>
-                    <p class="font-bold text-xs uppercase tracking-tight text-white">Machine Learning Modeling</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- ── Framework ── -->
+<section id="framework">
+  <div class="section-wrap">
+    <div class="fade-up">
+      <div class="section-tag" data-i18n="tag_01">01 · Methodology</div>
+      <h2 class="section-title" data-i18n="sec_framework">Project Framework</h2>
+      <p class="section-desc" data-i18n="desc_framework">A five-stage analytical pipeline from raw clinical data to interpretable machine learning predictions.</p>
+    </div>
+    <div class="flow-steps fade-up">
+      <div class="flow-step">
+        <div class="flow-num">01</div>
+        <div class="flow-name" data-i18n="flow_1">Dataset Acquisition</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">02</div>
+        <div class="flow-name" data-i18n="flow_2">Data Exploration &amp; Cleaning</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">03</div>
+        <div class="flow-name" data-i18n="flow_3">Exploratory Data Analysis</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">04</div>
+        <div class="flow-name" data-i18n="flow_4">Feature Selection</div>
+      </div>
+      <div class="flow-step active">
+        <div class="flow-num">05</div>
+        <div class="flow-name" data-i18n="flow_5">Machine Learning Modeling</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <section id="models" class="py-20 bg-gray-50 scroll-mt-16">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-4">Experimental Setup</h2>
-            <p class="text-gray-600 mb-12">Comparative analysis conducted with **11 Machine Learning Models** to identify the most robust predictor.</p>
-            <div class="flex flex-wrap justify-center gap-3 max-w-4xl mx-auto">
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Logistic Regression</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Decision Tree</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Random Forest</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Gradient Boosting</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">SVM</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Linear SVC</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Naive Bayes</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">AdaBoost</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Bagging</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Extra Trees</span>
-                <span class="model-chip text-teal-900 font-medium px-4 py-2 rounded-lg text-xs">Artificial Neural Network</span>
-            </div>
-        </div>
-    </section>
+<!-- ── Models ── -->
+<section id="models">
+  <div class="section-wrap">
+    <div class="fade-up">
+      <div class="section-tag" data-i18n="tag_02">02 · Experimental Setup</div>
+      <h2 class="section-title" data-i18n="sec_models">11 Models Evaluated</h2>
+      <p class="section-desc" data-i18n="desc_models">A comprehensive comparative analysis to identify the most robust predictor for Alzheimer's diagnosis.</p>
+    </div>
+    <div class="model-grid fade-up">
+      <span class="model-chip best">★ Random Forest</span>
+      <span class="model-chip">Extra Trees</span>
+      <span class="model-chip">XGBoost</span>
+      <span class="model-chip">LightGBM</span>
+      <span class="model-chip">Gradient Boosting</span>
+      <span class="model-chip">SVM</span>
+      <span class="model-chip">Logistic Regression</span>
+      <span class="model-chip">Decision Tree</span>
+      <span class="model-chip">Naive Bayes</span>
+      <span class="model-chip">KNN</span>
+      <span class="model-chip">MLP Neural Network</span>
+    </div>
+  </div>
+</section>
 
-    <section id="insights" class="py-20 max-w-7xl mx-auto px-4 scroll-mt-16">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold">Key Predictive Features</h2>
-            <p class="text-gray-600 italic">Identified via Random Forest Gini Importance</p>
+<!-- ── Insights ── -->
+<section id="insights">
+  <div class="section-wrap">
+    <div class="fade-up">
+      <div class="section-tag" data-i18n="tag_03">03 · Feature Analysis</div>
+      <h2 class="section-title" data-i18n="sec_features">Key Predictive Features</h2>
+      <p class="section-desc" data-i18n="desc_features">Identified via Random Forest Gini Importance and validated through EDA statistical tests.</p>
+    </div>
+    <div class="insights-stack fade-up">
+      <div class="chart-box">
+        <div class="chart-box-label" data-i18n="gini_label">Gini Importance Score</div>
+        <div class="chart-container">
+          <canvas id="featureChart" role="img" aria-label="Horizontal bar chart showing Gini feature importances">Feature importance: Functional Assessment 35%, ADL 22%, MMSE 15%, Memory Complaints 8%, Behavioral Problems 5%.</canvas>
         </div>
-        <div class="grid md:grid-cols-2 gap-12 items-center">
-            <div class="chart-container bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
-                <canvas id="featureChart"></canvas>
-            </div>
-            <div class="space-y-4">
-                <div class="p-5 bg-white rounded-2xl border border-gray-100">
-                    <h4 class="font-bold text-teal-700 text-sm mb-1 uppercase tracking-wider">Functional Assessment</h4>
-                    <p class="text-[13px] text-gray-500">The primary driver for diagnosis prediction in the final model.</p>
-                </div>
-                <div class="p-5 bg-white rounded-2xl border border-gray-100">
-                    <h4 class="font-bold text-teal-700 text-sm mb-1 uppercase tracking-wider">ADL Index</h4>
-                    <p class="text-[13px] text-gray-500">Activities of Daily Living scores show a strong correlation with disease presence.</p>
-                </div>
-                <div class="p-5 bg-white rounded-2xl border border-gray-100">
-                    <h4 class="font-bold text-teal-700 text-sm mb-1 uppercase tracking-wider">MMSE Score</h4>
-                    <p class="text-[13px] text-gray-500">Clinical cognitive evaluation remain a vital predictor for Alzheimer's.</p>
-                </div>
-            </div>
+      </div>
+      <div class="feature-cards-row">
+        <div class="fcard">
+          <div class="fcard-rank">01 · GINI 0.35</div>
+          <div class="fcard-title" data-i18n="feat1_title">Functional Assessment</div>
+          <div class="fcard-desc" data-i18n="feat1_desc">The primary driver for diagnosis prediction. Captures patients' ability to perform complex daily functions.</div>
         </div>
-    </section>
+        <div class="fcard">
+          <div class="fcard-rank">02 · GINI 0.22</div>
+          <div class="fcard-title" data-i18n="feat2_title">ADL Index</div>
+          <div class="fcard-desc" data-i18n="feat2_desc">Activities of Daily Living scores show strong correlation with disease presence and stage progression.</div>
+        </div>
+        <div class="fcard">
+          <div class="fcard-rank">03 · GINI 0.15</div>
+          <div class="fcard-title" data-i18n="feat3_title">MMSE Score</div>
+          <div class="fcard-desc" data-i18n="feat3_desc">Mini-Mental State Examination remains a vital predictor — validated by significant t-test separation (p &lt; 0.001).</div>
+        </div>
+        <div class="fcard">
+          <div class="fcard-rank">04 · GINI 0.08</div>
+          <div class="fcard-title" data-i18n="feat4_title">Memory Complaints</div>
+          <div class="fcard-desc" data-i18n="feat4_desc">Patient-reported memory issues serve as a meaningful early-stage behavioral indicator.</div>
+        </div>
+        <div class="fcard">
+          <div class="fcard-rank">05 · GINI 0.05</div>
+          <div class="fcard-title" data-i18n="feat5_title">Behavioral Problems</div>
+          <div class="fcard-desc" data-i18n="feat5_desc">Presence of behavioral symptoms contributes incrementally to the model's classification decision.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <section id="performance" class="py-20 bg-slate-900 text-white scroll-mt-16">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold mb-4 text-teal-400">Model Performance</h2>
-            <p class="text-gray-400 mb-12 text-sm uppercase tracking-widest">Random Forest Results</p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700">
-                    <div class="text-4xl font-extrabold text-white mb-2">95.43%</div>
-                    <div class="text-[10px] uppercase tracking-[0.2em] font-bold text-teal-500">Accuracy</div>
-                </div>
-                <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700">
-                    <div class="text-4xl font-extrabold text-white mb-2">97.48%</div>
-                    <div class="text-[10px] uppercase tracking-[0.2em] font-bold text-teal-500">ROC-AUC</div>
-                </div>
-                <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700">
-                    <div class="text-4xl font-extrabold text-white mb-2">95.39%</div>
-                    <div class="text-[10px] uppercase tracking-[0.2em] font-bold text-teal-500">F1-Score</div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- ── SHAP ── -->
+<section id="shap">
+  <div class="section-wrap">
+    <div class="fade-up">
+      <div class="section-tag" data-i18n="tag_04">04 · Explainability</div>
+      <h2 class="section-title" data-i18n="sec_shap">SHAP Analysis</h2>
+      <p class="section-desc" data-i18n="desc_shap">SHapley Additive exPlanations — opening the Random Forest black box with game-theory-grounded feature attribution.</p>
+    </div>
+    <div class="shap-intro fade-up">
+      <div class="shap-card">
+        <div class="shap-type">Plot 01 · Global</div>
+        <div class="shap-plot-name" data-i18n="shap1_name">Beeswarm Summary</div>
+        <div class="shap-plot-desc" data-i18n="shap1_desc">Distribution of SHAP values for every test sample. Color encodes feature value — red high, blue low.</div>
+      </div>
+      <div class="shap-card">
+        <div class="shap-type">Plot 02 · Global</div>
+        <div class="shap-plot-name" data-i18n="shap2_name">Mean |SHAP| Bar</div>
+        <div class="shap-plot-desc" data-i18n="shap2_desc">Global importance ranking via mean absolute SHAP value — a model-level summary across all test samples.</div>
+      </div>
+      <div class="shap-card">
+        <div class="shap-type">Plot 03 · Local</div>
+        <div class="shap-plot-name" data-i18n="shap3_name">Waterfall (Individual)</div>
+        <div class="shap-plot-desc" data-i18n="shap3_desc">Decomposes one patient's prediction — quantifies how each feature shifted the output from the base value.</div>
+      </div>
+    </div>
 
-    <section id="document" class="py-20 max-w-7xl mx-auto px-4 scroll-mt-16">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold uppercase tracking-widest text-gray-800">Presentation Document</h2>
-            <p class="text-gray-500 mt-2 text-sm">Full analysis and detailed methodology</p>
-        </div>
-        <div class="aspect-[16/9] w-full border border-gray-200 rounded-2xl overflow-hidden shadow-2xl">
-            <iframe src="presentation_note_compressed (2).pdf" width="100%" height="100%" class="border-none">
-                <p>Your browser does not support PDFs. <a href="presentation_note_compressed (2).pdf">Download PDF</a></p>
-            </iframe>
-        </div>
-    </section>
+    <div class="shap-bars fade-up">
+      <div class="shap-bars-title" data-i18n="shap_bar_title">Approx. mean SHAP impact toward Alzheimer's diagnosis (class 1)</div>
+      <div id="shap-bars-inner"></div>
+      <div class="shap-legend">
+        <div class="sleg"><div class="sleg-dot" style="background:rgba(79,209,197,0.75)"></div>Positive (toward Alzheimer's)</div>
+        <div class="sleg"><div class="sleg-dot" style="background:rgba(124,143,232,0.75)"></div>Negative (away from Alzheimer's)</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <footer class="py-12 text-center text-gray-400 text-[11px] border-t bg-white">
-        <p class="font-bold text-gray-600 uppercase tracking-[0.3em] mb-4 text-[10px]">National Dong Hwa University</p>
-        <p class="mb-1 uppercase tracking-wider text-gray-500">Presented by <span class="text-gray-900 font-bold">Supharada Jundok (411121394)</span></p>
-        <p class="mb-1 tracking-wide">Advisors: Prof. Chung Yung & TA Demiah Kisla Charlery</p>
-        <p class="mt-6 pt-6 border-t border-gray-50 max-w-xs mx-auto italic">© 2025 Alzheimer's Prediction Project</p>
-    </footer>
+<!-- ── Performance ── -->
+<section id="performance">
+  <div class="section-wrap">
+    <div class="fade-up">
+      <div class="section-tag" data-i18n="tag_05">05 · Results</div>
+      <h2 class="section-title" data-i18n="sec_perf">Model Performance</h2>
+      <p class="section-desc" data-i18n="desc_perf">Random Forest achieved the highest test accuracy among all 11 evaluated classifiers.</p>
+    </div>
+    <div class="perf-grid fade-up">
+      <div class="perf-card" style="--line-color: linear-gradient(90deg, transparent, var(--teal), transparent)">
+        <div class="perf-num">96.74%</div>
+        <div class="perf-label" data-i18n="perf_acc">Test Accuracy</div>
+        <div class="perf-sub" data-i18n="perf_acc_sub">Best across all models</div>
+      </div>
+      <div class="perf-card" style="--line-color: linear-gradient(90deg, transparent, var(--indigo), transparent)">
+        <div class="perf-num">97.48%</div>
+        <div class="perf-label" data-i18n="perf_auc">ROC-AUC</div>
+        <div class="perf-sub" data-i18n="perf_auc_sub">Strong discrimination</div>
+      </div>
+      <div class="perf-card" style="--line-color: linear-gradient(90deg, transparent, var(--rose), transparent)">
+        <div class="perf-num">95.39%</div>
+        <div class="perf-label" data-i18n="perf_f1">F1-Score</div>
+        <div class="perf-sub" data-i18n="perf_f1_sub">Weighted average</div>
+      </div>
+    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const ctx = document.getElementById('featureChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Functional Assessment', 'ADL Index', 'MMSE', 'Memory Complaints', 'Behavioral Problems'],
-                    datasets: [{
-                        label: 'Relative Importance',
-                        data: [0.35, 0.22, 0.15, 0.08, 0.05],
-                        backgroundColor: '#0D9488',
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { 
-                        x: { beginAtZero: true, grid: { display: false } },
-                        y: { grid: { display: false } }
-                    }
-                }
-            });
-        });
-    </script>
+    <div class="model-table-wrap fade-up">
+      <div class="mtable-header">
+        <div data-i18n="th_model">Model</div>
+        <div data-i18n="th_acc">Accuracy</div>
+        <div data-i18n="th_f1">F1 (Alz.)</div>
+        <div data-i18n="th_cv">CV Accuracy</div>
+      </div>
+      <div class="mtable-row winner">
+        <div class="mname"><span class="crown">★</span>Random Forest</div>
+        <div class="mval">96.74%</div>
+        <div class="mval">96.40%</div>
+        <div class="mval">96.51%</div>
+      </div>
+      <div class="mtable-row">
+        <div class="mname">Extra Trees</div>
+        <div class="mval">95.81%</div>
+        <div class="mval">95.50%</div>
+        <div class="mval">95.60%</div>
+      </div>
+      <div class="mtable-row">
+        <div class="mname">XGBoost</div>
+        <div class="mval">94.65%</div>
+        <div class="mval">94.20%</div>
+        <div class="mval">94.40%</div>
+      </div>
+      <div class="mtable-row">
+        <div class="mname">LightGBM</div>
+        <div class="mval">94.42%</div>
+        <div class="mval">93.90%</div>
+        <div class="mval">94.10%</div>
+      </div>
+      <div class="mtable-row">
+        <div class="mname">Gradient Boosting</div>
+        <div class="mval">93.95%</div>
+        <div class="mval">93.50%</div>
+        <div class="mval">93.70%</div>
+      </div>
+      <div class="mtable-row">
+        <div class="mname">SVM</div>
+        <div class="mval">87.21%</div>
+        <div class="mval">86.40%</div>
+        <div class="mval">87.00%</div>
+      </div>
+    </div>
+
+    <div class="model-chart-box fade-up">
+      <div class="mc-header">
+        <div class="mc-title" data-i18n="mc_title">Click a metric to compare all models</div>
+        <div class="mc-tabs">
+          <button class="mc-tab active" onclick="switchMetric('accuracy', this)">Accuracy</button>
+          <button class="mc-tab" onclick="switchMetric('f1', this)">F1 (Alzheimer's)</button>
+          <button class="mc-tab" onclick="switchMetric('cv', this)">CV Accuracy</button>
+        </div>
+      </div>
+      <div class="model-chart-container">
+        <canvas id="modelChart" role="img" aria-label="Bar chart comparing all models by selected metric"></canvas>
+      </div>
+    </div>
+  </div>
+</section> -->
+<section id="document">
+  <div class="section-wrap">
+    <div class="fade-up">
+      <div class="section-tag" data-i18n="tag_06">06 · Report</div>
+      <h2 class="section-title" data-i18n="sec_doc">Presentation Document</h2>
+      <p class="section-desc" data-i18n="desc_doc">Full analysis, detailed methodology, and experimental results.</p>
+    </div>
+    <div class="pdf-wrap fade-up">
+      <iframe src="presentation_note_compressed (2).pdf" title="Project Presentation PDF">
+        <p>Your browser does not support PDFs. <a href="presentation_note_compressed (2).pdf" style="color:var(--teal)">Download PDF</a></p>
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="footer-copy">
+    <span data-i18n="footer_copy">© 2025 Alzheimer's Disease Prediction Project</span>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML" target="_blank" class="gh-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub Repo
+    </a>
+  </div>
+</footer>
+
+<script>
+/* ── Feature Chart ── */
+document.addEventListener('DOMContentLoaded', () => {
+  const ctx = document.getElementById('featureChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Functional Assessment', 'ADL Index', 'MMSE', 'Memory Complaints', 'Behavioral Problems'],
+      datasets: [{
+        label: 'Gini Importance',
+        data: [0.35, 0.22, 0.15, 0.08, 0.05],
+        backgroundColor: [
+          'rgba(79,209,197,0.8)',
+          'rgba(79,209,197,0.65)',
+          'rgba(124,143,232,0.7)',
+          'rgba(124,143,232,0.5)',
+          'rgba(124,143,232,0.35)',
+        ],
+        borderColor: 'transparent',
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a2236',
+          borderColor: 'rgba(255,255,255,0.08)',
+          borderWidth: 1,
+          titleColor: '#dde3ef',
+          bodyColor: '#7a8799',
+          callbacks: {
+            label: ctx => `  Importance: ${(ctx.raw * 100).toFixed(0)}%`
+          }
+        }
+      },
+      layout: { padding: { left: 0, right: 10, top: 0, bottom: 0 } },
+      scales: {
+        x: {
+          beginAtZero: true,
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: {
+            color: '#3d4858',
+            font: { family: 'DM Mono', size: 11 },
+            callback: v => (v * 100).toFixed(0) + '%'
+          },
+          border: { color: 'rgba(255,255,255,0.06)' }
+        },
+        y: {
+          grid: { display: false },
+          ticks: {
+            color: '#7a8799',
+            font: { family: 'DM Mono', size: 11 },
+            mirror: false,
+            padding: 8
+          },
+          border: { color: 'rgba(255,255,255,0.06)' }
+        }
+      }
+    }
+  });
+
+  /* ── SHAP bars ── */
+  const shapData = [
+    { feat: 'MMSE',                 pos: 72, neg: 8 },
+    { feat: 'ADL',                  pos: 58, neg: 10 },
+    { feat: 'FunctionalAssessment', pos: 52, neg: 12 },
+    { feat: 'MemoryComplaints',     pos: 24, neg: 3 },
+    { feat: 'BehavioralProblems',   pos: 16, neg: 2 },
+  ];
+  const container = document.getElementById('shap-bars-inner');
+  shapData.forEach(s => {
+    container.innerHTML += `
+      <div class="sbar-row">
+        <div class="sbar-feat">${s.feat}</div>
+        <div class="sbar-track">
+          <div class="sbar-pos" style="width:${s.pos}%"></div>
+        </div>
+        <div class="sbar-track" style="margin-left:8px">
+          <div class="sbar-neg" style="width:${s.neg}%"></div>
+        </div>
+        <div class="sbar-val">+${(s.pos/100).toFixed(2)}</div>
+      </div>`;
+  });
+
+  /* ── Interactive Model Comparison Chart ── */
+  const modelData = {
+    labels: ['Random Forest','Extra Trees','XGBoost','LightGBM','Grad. Boosting','SVM','Logistic Reg.','Decision Tree','Naive Bayes','KNN','MLP'],
+    accuracy: [96.74, 95.81, 94.65, 94.42, 93.95, 87.21, 85.12, 83.40, 79.65, 82.33, 88.60],
+    f1:       [96.40, 95.50, 94.20, 93.90, 93.50, 86.40, 84.70, 82.90, 78.20, 81.50, 87.90],
+    cv:       [96.51, 95.60, 94.40, 94.10, 93.70, 87.00, 85.00, 83.10, 79.40, 82.10, 88.20],
+  };
+  const barColors = modelData.labels.map((_, i) =>
+    i === 0 ? 'rgba(79,209,197,0.85)' : 'rgba(124,143,232,0.45)'
+  );
+  const borderColors = modelData.labels.map((_, i) =>
+    i === 0 ? 'rgba(79,209,197,1)' : 'transparent'
+  );
+
+  const modelCtx = document.getElementById('modelChart').getContext('2d');
+  let modelChart = new Chart(modelCtx, {
+    type: 'bar',
+    data: {
+      labels: modelData.labels,
+      datasets: [{
+        label: 'Accuracy (%)',
+        data: modelData.accuracy,
+        backgroundColor: barColors,
+        borderColor: borderColors,
+        borderWidth: 1,
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      layout: { padding: { top: 10 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a2236',
+          borderColor: 'rgba(255,255,255,0.08)',
+          borderWidth: 1,
+          titleColor: '#dde3ef',
+          bodyColor: '#7a8799',
+          callbacks: {
+            label: ctx => `  ${ctx.dataset.label}: ${ctx.raw.toFixed(2)}%`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { color: '#7a8799', font: { family: 'DM Mono', size: 10 }, maxRotation: 30 },
+          border: { color: 'rgba(255,255,255,0.06)' }
+        },
+        y: {
+          min: 70,
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: {
+            color: '#3d4858',
+            font: { family: 'DM Mono', size: 11 },
+            callback: v => v + '%'
+          },
+          border: { color: 'rgba(255,255,255,0.06)' }
+        }
+      }
+    }
+  });
+
+  window.switchMetric = (metric, btn) => {
+    document.querySelectorAll('.mc-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const labelMap = { accuracy: 'Accuracy (%)', f1: "F1 — Alzheimer's (%)", cv: 'CV Accuracy (%)' };
+    modelChart.data.datasets[0].data = modelData[metric];
+    modelChart.data.datasets[0].label = labelMap[metric];
+    modelChart.update('active');
+  };
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up:not(.visible)').forEach(el => io.observe(el));
+});
+
+  /* ── i18n translations ── */
+  const translations = {
+    en: {
+      eyebrow: 'Final Project · Big Data Analytics · December 2025',
+      hero_title_1: "Alzheimer's Disease Prediction and",
+      hero_title_2: 'Comprehensive Data Analysis Using',
+      hero_title_3: 'Machine Learning',
+      hero_sub: "Identifying key predictive features for early detection and disease severity analysis using clinical and behavioral data from 2,149 patients.",
+      hero_advisor: 'Advised by Prof. Chung Yung',
+      stat_acc: 'Test Accuracy', stat_models: 'Models Tested', stat_patients: 'Patient Records', stat_features: 'Features Selected',
+      tag_01: '01 · Methodology', tag_02: '02 · Experimental Setup', tag_03: '03 · Feature Analysis',
+      tag_04: '04 · Explainability', tag_05: '05 · Results', tag_06: '06 · Report',
+      sec_framework: 'Project Framework', sec_models: '11 Models Evaluated', sec_features: 'Key Predictive Features',
+      sec_shap: 'SHAP Analysis', sec_perf: 'Model Performance', sec_doc: 'Presentation Document',
+      desc_framework: 'A five-stage analytical pipeline from raw clinical data to interpretable machine learning predictions.',
+      desc_models: "A comprehensive comparative analysis to identify the most robust predictor for Alzheimer's diagnosis.",
+      desc_features: 'Identified via Random Forest Gini Importance and validated through EDA statistical tests.',
+      desc_shap: 'SHapley Additive exPlanations — opening the Random Forest black box with game-theory-grounded feature attribution.',
+      desc_perf: 'Random Forest achieved the highest test accuracy among all 11 evaluated classifiers.',
+      desc_doc: 'Full analysis, detailed methodology, and experimental results.',
+      flow_1: 'Dataset Acquisition', flow_2: 'Data Exploration & Cleaning', flow_3: 'Exploratory Data Analysis',
+      flow_4: 'Feature Selection', flow_5: 'Machine Learning Modeling',
+      perf_acc: 'Test Accuracy', perf_auc: 'ROC-AUC', perf_f1: 'F1-Score',
+      perf_acc_sub: 'Best across all models', perf_auc_sub: 'Strong discrimination', perf_f1_sub: 'Weighted average',
+      th_model: 'Model', th_acc: 'Accuracy', th_f1: 'F1 (Alz.)', th_cv: 'CV Accuracy',
+      mc_title: 'Click a metric to compare all models',
+      shap_bar_title: "Approx. mean SHAP impact toward Alzheimer's diagnosis (class 1)",
+      gini_label: 'Gini Importance Score',
+      feat1_title: 'Functional Assessment', feat2_title: 'ADL Index', feat3_title: 'MMSE Score',
+      feat4_title: 'Memory Complaints', feat5_title: 'Behavioral Problems',
+      feat1_desc: "The primary driver for diagnosis prediction. Captures patients' ability to perform complex daily functions.",
+      feat2_desc: 'Activities of Daily Living scores show strong correlation with disease presence and stage progression.',
+      feat3_desc: 'Mini-Mental State Examination remains a vital predictor — validated by significant t-test separation (p < 0.001).',
+      feat4_desc: 'Patient-reported memory issues serve as a meaningful early-stage behavioral indicator.',
+      feat5_desc: "Presence of behavioral symptoms contributes incrementally to the model's classification decision.",
+      shap1_name: 'Beeswarm Summary', shap2_name: 'Mean |SHAP| Bar', shap3_name: 'Waterfall (Individual)',
+      shap1_desc: 'Distribution of SHAP values for every test sample. Color encodes feature value — red high, blue low.',
+      shap2_desc: 'Global importance ranking via mean absolute SHAP value — a model-level summary across all test samples.',
+      shap3_desc: "Decomposes one patient's prediction — quantifies how each feature shifted the output from the base value.",
+      nav_overview: 'Overview', nav_framework: 'Framework', nav_models: 'Models',
+      nav_insights: 'Insights', nav_perf: 'Performance', nav_doc: 'Document',
+      footer_copy: "© 2025 Alzheimer's Disease Prediction Project",
+    },
+    th: {
+      eyebrow: 'Final Project· วิชา Big Data Analytics· ธันวาคม 2568',
+      hero_title_1: 'การทำนายโรคอัลไซเมอร์และ',
+      hero_title_2: 'การวิเคราะห์ข้อมูลเชิงลึก',
+      hero_title_3: 'ด้วย Machine Learning',
+      hero_sub: 'ระบุคุณลักษณะเชิงทำนายที่สำคัญสำหรับการตรวจพบโรคในระยะแรกและการวิเคราะห์ความรุนแรงของโรค โดยใช้ข้อมูลทางคลินิกจากผู้ป่วย 2,149 ราย',
+      hero_advisor: 'อาจารย์ที่ปรึกษา ศจ. Chung Yung',
+      stat_acc: 'ความแม่นยำ', stat_models: 'โมเดลที่ทดสอบ', stat_patients: 'ข้อมูลผู้ป่วย', stat_features: 'คุณลักษณะที่เลือก',
+      tag_01: '01 · ระเบียบวิธี', tag_02: '02 · การตั้งค่าการทดลอง', tag_03: '03 · วิเคราะห์คุณลักษณะ',
+      tag_04: '04 · การอธิบายโมเดล', tag_05: '05 · ผลลัพธ์', tag_06: '06 · รายงาน',
+      sec_framework: 'กรอบการทำงาน', sec_models: 'ประเมิน 11 โมเดล', sec_features: 'คุณลักษณะเชิงทำนายหลัก',
+      sec_shap: 'การวิเคราะห์ SHAP', sec_perf: 'ประสิทธิภาพของโมเดล', sec_doc: 'เอกสารนำเสนอ',
+      desc_framework: 'กระบวนการวิเคราะห์ 5 ขั้นตอน ตั้งแต่ข้อมูลทางคลินิกดิบ ไปจนถึงการทำนายที่ตีความได้',
+      desc_models: 'การวิเคราะห์เปรียบเทียบแบบครอบคลุมเพื่อระบุตัวทำนายที่แม่นยำที่สุดสำหรับการวินิจฉัยโรคอัลไซเมอร์',
+      desc_features: 'ระบุผ่าน Gini Importance ของ Random Forest และยืนยันด้วยการทดสอบทางสถิติ EDA',
+      desc_shap: 'SHapley Additive exPlanations — เปิดกล่องดำ Random Forest ด้วยการวัดความสำคัญของคุณลักษณะ',
+      desc_perf: 'Random Forest ให้ความแม่นยำสูงสุดในการทดสอบจาก 11 โมเดลที่ประเมิน',
+      desc_doc: 'การวิเคราะห์เต็มรูปแบบ วิธีการโดยละเอียด และผลการทดลอง',
+      flow_1: 'รวบรวมชุดข้อมูล', flow_2: 'สำรวจและทำความสะอาดข้อมูล', flow_3: 'วิเคราะห์ข้อมูลเชิงสำรวจ',
+      flow_4: 'คัดเลือกคุณลักษณะ', flow_5: 'สร้างโมเดล ML',
+      perf_acc: 'ความแม่นยำ', perf_auc: 'ROC-AUC', perf_f1: 'F1-Score',
+      perf_acc_sub: 'ดีที่สุดในทุกโมเดล', perf_auc_sub: 'จำแนกได้ดีเยี่ยม', perf_f1_sub: 'ค่าเฉลี่ยถ่วงน้ำหนัก',
+      th_model: 'โมเดล', th_acc: 'ความแม่นยำ', th_f1: 'F1 (Alz.)', th_cv: 'CV Accuracy',
+      mc_title: 'คลิกเพื่อเปรียบเทียบทุกโมเดลตามเมตริก',
+      shap_bar_title: 'ผลกระทบ SHAP เฉลี่ยต่อการวินิจฉัยอัลไซเมอร์ (class 1)',
+      gini_label: 'คะแนน Gini Importance',
+      feat1_title: 'การประเมินการทำงาน', feat2_title: 'ดัชนี ADL', feat3_title: 'คะแนน MMSE',
+      feat4_title: 'ความบกพร่องด้านความจำ', feat5_title: 'ปัญหาพฤติกรรม',
+      feat1_desc: 'ตัวขับเคลื่อนหลักในการทำนายการวินิจฉัย บันทึกความสามารถของผู้ป่วยในการทำกิจกรรมประจำวันที่ซับซ้อน',
+      feat2_desc: 'คะแนน ADL แสดงความสัมพันธ์อย่างแน่นแฟ้นกับการมีอยู่ของโรคและความรุนแรงที่เพิ่มขึ้น',
+      feat3_desc: 'การประเมินความรู้ความเข้าใจทางคลินิกยังคงเป็นตัวทำนายที่สำคัญ (p < 0.001)',
+      feat4_desc: 'ความบกพร่องด้านความจำที่รายงานโดยผู้ป่วยเป็นตัวบ่งชี้พฤติกรรมระยะแรกที่มีความหมาย',
+      feat5_desc: 'การมีอาการทางพฤติกรรมส่งผลเพิ่มเติมต่อการจำแนกของโมเดล',
+      shap1_name: 'กราฟ Beeswarm', shap2_name: 'กราฟ Mean |SHAP|', shap3_name: 'กราฟ Waterfall (รายบุคคล)',
+      shap1_desc: 'การกระจาย SHAP ของทุกตัวอย่างทดสอบ สีแสดงค่าของคุณลักษณะ — แดง=สูง, น้ำเงิน=ต่ำ',
+      shap2_desc: 'การจัดอันดับความสำคัญทั่วโลกผ่านค่าเฉลี่ยของ SHAP สัมบูรณ์',
+      shap3_desc: 'แยกย่อยการทำนายสำหรับผู้ป่วยคนเดียว แสดงว่าแต่ละคุณลักษณะเปลี่ยนค่าผลลัพธ์อย่างไร',
+      nav_overview: 'ภาพรวม', nav_framework: 'กรอบงาน', nav_models: 'โมเดล',
+      nav_insights: 'ข้อมูลเชิงลึก', nav_perf: 'ประสิทธิภาพ', nav_doc: 'เอกสาร',
+      footer_copy: '© 2025 โปรเจ็คทำนายโรคอัลไซเมอร์',
+    },
+    zh: {
+      eyebrow: '期末專題 · 大數據分析課程 · 2025年12月',
+      hero_title_1: '阿茲海默症預測與',
+      hero_title_2: '綜合數據分析',
+      hero_title_3: '機器學習應用',
+      hero_sub: '利用2,149名患者的臨床及行為數據，識別早期偵測和疾病嚴重程度分析的關鍵預測特徵。',
+      hero_advisor: '指導教授 雍忠 教授',
+      stat_acc: '測試準確率', stat_models: '評估模型數', stat_patients: '患者記錄', stat_features: '選取特徵數',
+      tag_01: '01 · 研究方法', tag_02: '02 · 實驗設置', tag_03: '03 · 特徵分析',
+      tag_04: '04 · 可解釋性', tag_05: '05 · 研究結果', tag_06: '06 · 研究報告',
+      sec_framework: '研究框架', sec_models: '11個模型評估', sec_features: '關鍵預測特徵',
+      sec_shap: 'SHAP 分析', sec_perf: '模型效能', sec_doc: '簡報文件',
+      desc_framework: '從原始臨床數據到可解釋機器學習預測的五階段分析流程。',
+      desc_models: '針對阿茲海默症診斷，進行全面比較分析以找出最佳預測模型。',
+      desc_features: '透過隨機森林Gini重要性識別，並透過EDA統計測試驗證。',
+      desc_shap: 'SHapley加法解釋法 — 以賽局理論為基礎，解開隨機森林黑盒子。',
+      desc_perf: '在所有11個評估的分類器中，隨機森林達到最高測試準確率。',
+      desc_doc: '完整分析、詳細方法論及實驗結果。',
+      flow_1: '數據集獲取', flow_2: '數據探索與清理', flow_3: '探索性數據分析',
+      flow_4: '特徵選取', flow_5: '機器學習建模',
+      perf_acc: '測試準確率', perf_auc: 'ROC-AUC', perf_f1: 'F1分數',
+      perf_acc_sub: '所有模型最佳', perf_auc_sub: '強大的辨別力', perf_f1_sub: '加權平均',
+      th_model: '模型', th_acc: '準確率', th_f1: 'F1 (阿茲海默)', th_cv: 'CV準確率',
+      mc_title: '點擊指標以比較所有模型',
+      shap_bar_title: '各特徵對阿茲海默症診斷的平均SHAP影響（類別1）',
+      gini_label: 'Gini重要性分數',
+      feat1_title: '功能評估', feat2_title: 'ADL指數', feat3_title: 'MMSE分數',
+      feat4_title: '記憶抱怨', feat5_title: '行為問題',
+      feat1_desc: '診斷預測的主要驅動因素，評估患者執行複雜日常活動的能力。',
+      feat2_desc: '日常生活活動分數與疾病存在及進展呈現強烈相關性。',
+      feat3_desc: '簡易精神狀態檢查仍是重要預測指標 — 經t檢驗顯著性驗證（p < 0.001）。',
+      feat4_desc: '患者自述的記憶問題是有意義的早期行為指標。',
+      feat5_desc: '行為症狀的存在對模型分類決策有額外的增量貢獻。',
+      shap1_name: '蜂群圖摘要', shap2_name: '平均|SHAP|條形圖', shap3_name: '瀑布圖（個體）',
+      shap1_desc: '每個測試樣本的SHAP值分布，顏色代表特徵值 — 紅色=高，藍色=低。',
+      shap2_desc: '透過所有測試樣本的平均絕對SHAP值進行全局重要性排名。',
+      shap3_desc: '分解單一患者的預測結果，量化每個特徵如何改變基準輸出值。',
+      nav_overview: '概覽', nav_framework: '研究框架', nav_models: '模型',
+      nav_insights: '洞察', nav_perf: '效能', nav_doc: '文件',
+      footer_copy: '© 2025 阿茲海默症預測專題',
+    }
+  };
+
+  let currentLang = 'en';
+
+  window.setLang = (lang, btn) => {
+    currentLang = lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const t = translations[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (t[key] !== undefined) el.innerHTML = t[key];
+    });
+    // Update html lang attribute
+    document.documentElement.lang = lang === 'zh' ? 'zh-TW' : lang;
+  };
+
+</script>
 </body>
 </html>
