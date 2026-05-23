@@ -170,8 +170,11 @@ Run all cells in order. The SHAP section is Section 5 at the end.
 │   ├── shap_bar_importance.png        # SHAP mean |SHAP| bar plot
 │   ├── shap_summary_beeswarm.png      # SHAP beeswarm summary plot
 │   └── shap_waterfall_individual.png  # SHAP waterfall — sample index 1
-├── presentation_note_compressed (2).pdf
+├── Big_Data_Project_Presentation1.pdf
 └── README.md
+
+* note : deleted presentation_note_compressed (2).pdf because the file was broken
+         and upload the new file which is Big_Data_Project_Presentation1.pdf
 ```
 
 ---
