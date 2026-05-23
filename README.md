@@ -18,7 +18,8 @@ This project applies machine learning techniques to predict Alzheimer's disease 
 
 **Key result:** Random Forest achieved **96.74% test accuracy** and **97.48% ROC-AUC**, outperforming 10 other classifiers.
 
-🌐 **Live Showcase:** [View Project Website](https://mato8q.github.io/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML)
+🌐 **Live Showcase:** [View Project Website](https://mato8q.github.io/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML)  
+📓 **Notebook (with SHAP):** [View on GitHub](https://github.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML/blob/ef1b53ca2b688feef00c67cd2f2427ef342ac537/alzheimer_with_shap.ipynb)
 
 ---
 
@@ -41,13 +42,13 @@ This project applies machine learning techniques to predict Alzheimer's disease 
 
 Chosen through correlation analysis, t-tests, chi-square tests, and Spearman correlation:
 
-| Feature | Type | Gini Importance | Reason |
+| Rank | Feature | Type | Gini Importance |
 |---|---|---|---|
-| `FunctionalAssessment` | Continuous | 0.35 | Highest discriminative power |
-| `ADL` | Continuous | 0.22 | Strong separation between classes |
-| `MMSE` | Continuous | 0.15 | Core clinical cognitive screening |
-| `MemoryComplaints` | Binary | 0.08 | Significant chi-square (p < 0.05) |
-| `BehavioralProblems` | Binary | 0.05 | Significant chi-square (p < 0.05) |
+| 1 | `FunctionalAssessment` | Continuous | 0.35 |
+| 2 | `ADL` | Continuous | 0.22 |
+| 3 | `MMSE` | Continuous | 0.15 |
+| 4 | `MemoryComplaints` | Binary | 0.08 |
+| 5 | `BehavioralProblems` | Binary | 0.05 |
 
 ---
 
@@ -96,18 +97,39 @@ RandomForestClassifier(n_estimators=300, class_weight='balanced', random_state=1
 
 ## 💡 SHAP Explainability
 
-SHAP (SHapley Additive exPlanations) was applied to interpret the Random Forest model's predictions.
+SHAP (SHapley Additive exPlanations) was applied to interpret the Random Forest model's predictions with game-theory-grounded feature attribution.
 
-Three plots were generated:
+### 1. Mean |SHAP| Bar Plot — Global Importance Ranking
 
-**1. Beeswarm Summary Plot** — shows distribution of SHAP values for all test samples.  
-→ Low MMSE scores (blue) consistently produce large positive SHAP values, confirming cognitive impairment as the strongest predictor.
+![SHAP Bar Plot](assets/shap_bar_importance.png)
 
-**2. Mean |SHAP| Bar Plot** — global feature importance ranking.  
-→ MMSE ranks first by average impact, followed by ADL and FunctionalAssessment.
+By mean absolute SHAP value across all test samples, **FunctionalAssessment** is the most impactful feature (~0.190), followed closely by **ADL** (~0.172). Notably, **MemoryComplaints** (~0.125) ranks 3rd — ahead of MMSE (~0.115) — indicating that patient-reported symptoms carry more discriminative weight than the cognitive screening score alone when using SHAP-based attribution.
 
-**3. Waterfall Plot** — individual prediction breakdown.  
-→ Shows exactly which features pushed a single patient's prediction toward or away from an Alzheimer's diagnosis.
+### 2. Beeswarm Summary Plot — Feature Impact Distribution
+
+![SHAP Beeswarm Plot](assets/shap_summary_beeswarm.png)
+
+Each dot is one test sample. Key observations from the actual results:
+
+- **FunctionalAssessment & ADL** show wide continuous spreads on both sides. High values (red) cluster on the negative side, meaning high functional ability *reduces* Alzheimer's risk, while low values (blue) push toward diagnosis.
+- **MemoryComplaints & BehavioralProblems** show a clear binary pattern — blue dots (absent) cluster near zero, while red dots (present) scatter far right, showing these binary flags have a strong directional push when positive.
+- **MMSE** has a distinct pattern: high scores (red) spread to the far left (strongly negative), meaning high cognitive performance strongly rules out Alzheimer's. Low MMSE however clusters near zero, suggesting the model relies more on functional features when MMSE is impaired.
+
+### 3. Waterfall Plot — Individual Prediction (Sample Index: 1)
+
+![SHAP Waterfall Plot](assets/shap_waterfall_individual.png)
+
+For this patient, the model starts from the base value **E[f(X)] = 0.5** and arrives at **f(x) = 1.0** (Alzheimer's positive):
+
+| Feature | Scaled Value | SHAP Contribution |
+|---|---|---|
+| FunctionalAssessment | −1.052 | **+0.27** ↑ |
+| ADL | −1.288 | **+0.25** ↑ |
+| MMSE | 0.626 | **+0.08** ↑ |
+| MemoryComplaints | −0.502 | −0.06 ↓ |
+| BehavioralProblems | −0.435 | −0.04 ↓ |
+
+Low FunctionalAssessment and ADL scores drove this prediction most strongly. Interestingly, the absence of MemoryComplaints and BehavioralProblems slightly reduced the predicted probability, but was overwhelmed by the functional decline signals.
 
 ---
 
@@ -133,21 +155,22 @@ Or update the path in the notebook's first cell.
 
 ### 4. Run the notebook
 ```bash
-jupyter notebook alzheimer-s-disease-prediction-and-comprehensive-d.ipynb
+jupyter notebook alzheimer_with_shap.ipynb
 ```
-Run all cells in order. The SHAP section is at the end (Section 5).
+Run all cells in order. The SHAP section is Section 5 at the end.
 
 ---
 
 ## 📁 Project Structure
 
 ```
-├── alzheimer-s-disease-prediction-and-comprehensive-d.ipynb   # Main notebook
-├── index.html                                                  # Project showcase website
-├── presentation_note_compressed (2).pdf                       # Presentation slides
-├── shap_summary_beeswarm.png                                  # Generated SHAP plot
-├── shap_bar_importance.png                                    # Generated SHAP plot
-├── shap_waterfall_individual.png                              # Generated SHAP plot
+├── alzheimer_with_shap.ipynb          # Main notebook (includes SHAP Section 5)
+├── index.html                         # Project showcase website (EN/TH/中文)
+├── assets/
+│   ├── shap_bar_importance.png        # SHAP mean |SHAP| bar plot
+│   ├── shap_summary_beeswarm.png      # SHAP beeswarm summary plot
+│   └── shap_waterfall_individual.png  # SHAP waterfall — sample index 1
+├── presentation_note_compressed (2).pdf
 └── README.md
 ```
 
