@@ -1,573 +1,396 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alzheimer's Disease Prediction — Supharada Jundok</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Syne+Mono&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --black:#0d0d0d;
-  --white:#f5f2ed;
-  --orange:#e84c1e;
-  --orange2:#ff6b35;
-  --gray:#6b6b6b;
-  --gray2:#c8c4bc;
-  --gray3:#e8e4dc;
-  --border:#d4d0c8;
+  --black:#111010;
+  --white:#f7f4ef;
+  --orange:#e8420a;
+  --orange-mid:#f07040;
+  --gray:#888078;
+  --gray-light:#ccc8c0;
+  --rule:#e0dcd4;
+  --surface:#f0ede7;
+
+  /* type scale */
+  --t-headline: 900 clamp(52px,6.5vw,88px)/1.0 'Fraunces', Georgia, serif;
+  --t-sub1:     700 clamp(22px,2.8vw,34px)/1.2 'Fraunces', Georgia, serif;
+  --t-sub2:     400 clamp(16px,1.6vw,20px)/1.45 'Plus Jakarta Sans', sans-serif;
+  --t-body:     300 15px/1.7 'Plus Jakarta Sans', sans-serif;
+  --t-label:    500 10px/1 'IBM Plex Mono', monospace;
+  --t-num:      700 clamp(40px,4.5vw,60px)/1 'Fraunces', Georgia, serif;
 }
-html{scroll-behavior:smooth;}
+
+html{scroll-behavior:smooth}
 body{
-  font-family:'DM Sans',sans-serif;
   background:var(--white);
   color:var(--black);
-  font-size:15px;
-  line-height:1.6;
+  font:var(--t-body);
   overflow-x:hidden;
   cursor:none;
 }
 
-/* ── Custom cursor ── */
-.cursor{position:fixed;z-index:9999;pointer-events:none;mix-blend-mode:difference;}
-.cursor-dot{width:8px;height:8px;background:var(--orange);border-radius:50%;transform:translate(-50%,-50%);transition:transform 0.1s;}
-.cursor-ring{width:36px;height:36px;border:1.5px solid var(--black);border-radius:50%;transform:translate(-50%,-50%);transition:all 0.15s ease;top:0;left:0;}
+/* ── cursor ── */
+#c{position:fixed;width:8px;height:8px;border-radius:50%;
+   background:var(--orange);pointer-events:none;z-index:9999;
+   transform:translate(-50%,-50%);transition:transform .12s,opacity .12s;
+   mix-blend-mode:multiply}
+#c.big{transform:translate(-50%,-50%) scale(5);opacity:.18}
 
-/* ── Nav ── */
+/* ── nav ── */
 nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  height:56px;
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:54px;padding:0 40px;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 32px;
   background:var(--white);
-  border-bottom:1px solid var(--border);
+  border-bottom:1px solid var(--rule);
 }
-.nav-logo{
-  font-family:'Syne',sans-serif;
-  font-weight:800;
-  font-size:13px;
-  letter-spacing:0.04em;
-  text-transform:uppercase;
-  color:var(--black);
-  text-decoration:none;
-}
-.nav-right{display:flex;align-items:center;gap:24px;}
-.nav-links{display:flex;gap:20px;}
+.nav-logo{font:600 13px/1 'Plus Jakarta Sans',sans-serif;letter-spacing:.04em;color:var(--black)}
+.nav-links{display:flex;gap:36px}
 .nav-links a{
-  font-family:'Syne Mono',monospace;
-  font-size:10px;
-  letter-spacing:0.12em;
-  text-transform:uppercase;
-  color:var(--gray);
-  text-decoration:none;
-  transition:color 0.2s;
+  font:var(--t-label);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gray);text-decoration:none;transition:color .2s
 }
-.nav-links a:hover{color:var(--orange);}
-.lang-switcher{display:flex;gap:2px;}
-.lang-btn{
-  font-family:'Syne Mono',monospace;
-  font-size:10px;
-  padding:4px 8px;
-  border:1px solid var(--border);
-  background:transparent;
-  color:var(--gray);
-  cursor:none;
-  transition:all 0.15s;
-  letter-spacing:0.06em;
+.nav-links a:hover{color:var(--orange)}
+.lang-sw{display:flex}
+.lb{
+  font:var(--t-label);letter-spacing:.1em;
+  padding:5px 11px;border:1px solid var(--rule);
+  color:var(--gray);background:transparent;
+  cursor:none;transition:all .15s;border-right:none
 }
-.lang-btn.active{background:var(--black);color:var(--white);border-color:var(--black);}
-.lang-btn:hover:not(.active){border-color:var(--black);color:var(--black);}
+.lb:last-child{border-right:1px solid var(--rule)}
+.lb.on,.lb:hover{background:var(--black);color:var(--white);border-color:var(--black)}
 
-/* ── Hero ── */
+/* ── HERO ── */
 #overview{
-  min-height:100vh;
-  padding:120px 32px 64px;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  position:relative;
-  border-bottom:1px solid var(--border);
-  overflow:hidden;
+  padding:108px 40px 0;
+  border-bottom:1px solid var(--rule);
 }
-.hero-tag{
-  font-family:'Syne Mono',monospace;
-  font-size:10px;
-  letter-spacing:0.18em;
-  text-transform:uppercase;
-  color:var(--orange);
-  margin-bottom:20px;
-  display:flex;align-items:center;gap:12px;
+.hero-eyebrow{
+  font:var(--t-label);letter-spacing:.18em;text-transform:uppercase;
+  color:var(--orange);margin-bottom:28px;
+  display:flex;align-items:center;gap:12px
 }
-.hero-tag::before{content:'';width:24px;height:1px;background:var(--orange);}
-.hero-h1{
-  font-family:'Syne',sans-serif;
-  font-weight:800;
-  font-size:clamp(36px,5.5vw,76px);
-  line-height:1.02;
-  letter-spacing:-0.015em;
+.hero-eyebrow::before{content:'';width:28px;height:1px;background:var(--orange)}
+
+/* headline type */
+.hero-title{
+  font:var(--t-headline);
+  letter-spacing:-.02em;
   text-transform:uppercase;
   color:var(--black);
   margin-bottom:0;
 }
-.hero-h1 .accent{color:var(--orange);}
-.hero-h1 .italic{font-style:italic;font-weight:400;letter-spacing:0;text-transform:none;font-family:'DM Sans',sans-serif;font-size:0.65em;line-height:1.3;display:block;color:var(--gray);margin-top:4px;}
-.hero-bottom{
+.hero-title .orange{color:var(--orange)}
+.hero-title .sub{
+  font:italic 300 clamp(22px,2.6vw,36px)/1.4 'Fraunces',Georgia,serif;
+  text-transform:none;letter-spacing:-.01em;
+  color:var(--gray);display:block;margin-top:8px
+}
+
+/* meta row */
+.hero-meta{
   display:flex;align-items:flex-end;justify-content:space-between;
-  margin-top:48px;
-  padding-top:24px;
-  border-top:1px solid var(--border);
-  flex-wrap:wrap;gap:24px;
+  padding:28px 0 36px;
+  border-top:1px solid var(--rule);
+  margin-top:40px;
+  flex-wrap:wrap;gap:24px
 }
-.hero-meta-block{display:flex;flex-direction:column;gap:4px;}
-.hero-author{
-  font-family:'Syne',sans-serif;
-  font-weight:700;
-  font-size:16px;
-  display:flex;align-items:center;gap:8px;
+.hero-info{display:flex;flex-direction:column;gap:5px}
+.hero-info-line{font:var(--t-body);color:var(--gray);font-size:13px}
+.hero-name{
+  font:700 16px/1 'Plus Jakarta Sans',sans-serif;
+  margin-top:8px;color:var(--black)
 }
-.hero-author a{color:inherit;text-decoration:none;border-bottom:1.5px solid var(--orange);}
-.hero-author a:hover{color:var(--orange);}
-.hero-credits{font-size:12px;color:var(--gray);font-weight:300;}
-.hero-stats{display:flex;gap:0;}
+.hero-name a{
+  color:inherit;text-decoration:none;
+  border-bottom:1.5px solid var(--orange);
+  padding-bottom:1px;transition:color .2s
+}
+.hero-name a:hover{color:var(--orange)}
+
+/* stats strip */
+.hero-stats{
+  display:grid;grid-template-columns:repeat(4,auto);
+  gap:0;align-items:center
+}
 .hstat{
-  padding:0 28px;
-  border-right:1px solid var(--border);
-  text-align:center;
-}
-.hstat:first-child{padding-left:0;}
-.hstat:last-child{border-right:none;}
-.hstat-num{
-  font-family:'Syne',sans-serif;
-  font-weight:800;
-  font-size:28px;
-  color:var(--black);
-  line-height:1;
-  display:block;
-}
-.hstat-num small{font-size:0.5em;font-weight:600;color:var(--orange);}
-.hstat-label{
-  font-family:'Syne Mono',monospace;
-  font-size:9px;
-  letter-spacing:0.1em;
-  text-transform:uppercase;
-  color:var(--gray);
-  margin-top:3px;
-  display:block;
-}
-
-/* ── Orange banner ── */
-.banner{
-  background:var(--orange);
-  padding:18px 32px;
-  display:flex;align-items:center;gap:0;
-  overflow:hidden;
-  border-bottom:1px solid var(--black);
-}
-.banner-item{
-  display:flex;align-items:center;gap:16px;
-  flex-shrink:0;
   padding:0 32px;
+  border-right:1px solid var(--rule);
+  text-align:right
 }
-.banner-num{
-  font-family:'Syne',sans-serif;
-  font-weight:800;
-  font-size:48px;
-  line-height:1;
-  color:var(--white);
-  opacity:0.25;
+.hstat:first-child{padding-left:0}
+.hstat:last-child{border-right:none;padding-right:0}
+.hstat-n{
+  font:var(--t-num);
+  color:var(--black);display:block;line-height:1
 }
-.banner-text{
-  font-family:'Syne',sans-serif;
-  font-weight:600;
-  font-size:13px;
-  text-transform:uppercase;
-  letter-spacing:0.06em;
-  color:var(--white);
-}
-.banner-sep{
-  font-family:'Syne',sans-serif;
-  font-size:24px;
-  color:var(--white);
-  opacity:0.4;
-  padding:0 8px;
+.hstat-n sup{font-size:.45em;color:var(--orange);font-weight:700;vertical-align:super}
+.hstat-l{
+  font:var(--t-label);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--gray);
+  margin-top:5px;display:block
 }
 
-/* ── Section base ── */
-section{border-bottom:1px solid var(--border);}
-.sec-inner{max-width:1100px;margin:0 auto;padding:72px 32px;}
-.sec-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:52px;padding-bottom:20px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:12px;}
-.sec-num{
-  font-family:'Syne Mono',monospace;
-  font-size:10px;
-  letter-spacing:0.15em;
-  color:var(--gray);
-  text-transform:uppercase;
+/* ── SECTION base ── */
+section:not(#overview){border-top:1px solid var(--rule)}
+.wrap{max-width:1100px;margin:0 auto;padding:80px 40px}
+
+.sh{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  padding-bottom:36px;border-bottom:1px solid var(--rule);margin-bottom:52px;
+  flex-wrap:wrap;gap:16px
 }
-.sec-title{
-  font-family:'Syne',sans-serif;
-  font-weight:800;
-  font-size:clamp(28px,4vw,44px);
-  line-height:1;
-  text-transform:uppercase;
-  letter-spacing:-0.01em;
+.sh-left{}
+.sh-num{
+  font:var(--t-label);letter-spacing:.18em;text-transform:uppercase;
+  color:var(--orange);margin-bottom:10px
 }
-.sec-desc{
-  font-size:14px;
-  color:var(--gray);
-  max-width:400px;
-  font-weight:300;
-  text-align:right;
+/* headline = sub1 scale */
+.sh-title{
+  font:var(--t-sub1);
+  letter-spacing:-.01em;text-transform:uppercase;color:var(--black)
+}
+/* section descriptor = sub2 */
+.sh-desc{
+  font:var(--t-sub2);
+  color:var(--gray);max-width:380px;text-align:right;font-weight:300
 }
 
-/* ── Framework ── */
-#framework{background:var(--white);}
-.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:0;}
-.flow-step{
-  padding:28px 20px;
-  border-right:1px solid var(--border);
-  position:relative;
+/* ── FRAMEWORK ── */
+#framework{background:var(--black)}
+#framework .sh-title{color:var(--white)}
+#framework .sh-num{color:var(--orange)}
+#framework .sh-desc{color:#444}
+#framework .sh{border-bottom-color:#222}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid #222;border-radius:3px;overflow:hidden}
+.fc{
+  padding:26px 20px;border-right:1px solid #222;
+  transition:background .2s
 }
-.flow-step:last-child{border-right:none;}
-.flow-step.active{background:var(--orange);}
-.flow-step.active .fn{color:rgba(255,255,255,0.5);}
-.flow-step.active .ft{color:var(--white);}
-.fn{
-  font-family:'Syne Mono',monospace;
-  font-size:10px;
-  letter-spacing:0.12em;
-  color:var(--gray2);
-  margin-bottom:12px;
-  display:block;
+.fc:last-child{border-right:none;background:var(--orange)}
+.fc:hover:not(:last-child){background:#161616}
+.fc-n{font:var(--t-label);color:#444;margin-bottom:10px;letter-spacing:.1em}
+.fc:last-child .fc-n{color:rgba(255,255,255,.6)}
+.fc-t{
+  font:600 13px/1.4 'Plus Jakarta Sans',sans-serif;
+  letter-spacing:.02em;text-transform:uppercase;color:#ccc
 }
-.ft{
-  font-family:'Syne',sans-serif;
-  font-weight:700;
-  font-size:12px;
-  text-transform:uppercase;
-  letter-spacing:0.05em;
-  color:var(--black);
-  line-height:1.4;
-}
+.fc:last-child .fc-t{color:#fff}
 
-/* ── Models ── */
-#models{background:var(--gray3);}
-.model-grid{display:flex;flex-wrap:wrap;gap:8px;}
-.model-chip{
-  font-family:'Syne Mono',monospace;
-  font-size:11px;
-  padding:8px 16px;
-  border:1.5px solid var(--border);
-  background:var(--white);
-  color:var(--gray);
-  letter-spacing:0.04em;
-  transition:all 0.15s;
-  cursor:none;
+/* ── MODELS ── */
+#models{background:var(--white)}
+.chips{display:flex;flex-wrap:wrap;gap:0}
+.chip{
+  font:var(--t-label);letter-spacing:.06em;
+  padding:10px 18px;border:1px solid var(--rule);
+  margin:-.5px;color:var(--black);background:var(--white);
+  transition:all .15s;cursor:none
 }
-.model-chip:hover{border-color:var(--black);color:var(--black);}
-.model-chip.best{
-  background:var(--black);
-  color:var(--white);
-  border-color:var(--black);
-}
-.model-chip.best:hover{background:var(--orange);border-color:var(--orange);}
+.chip:hover{background:var(--black);color:var(--white);border-color:var(--black)}
+.chip.best{background:var(--orange);color:var(--white);border-color:var(--orange)}
+.chip.best:hover{background:var(--black);border-color:var(--black)}
 
-/* ── Insights ── */
-#insights{background:var(--white);}
-.insights-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
-.chart-panel{border:1.5px solid var(--border);padding:28px;}
-.chart-label{
-  font-family:'Syne Mono',monospace;
-  font-size:9px;
-  letter-spacing:0.15em;
-  text-transform:uppercase;
-  color:var(--gray);
-  margin-bottom:20px;
-}
-.chart-container{position:relative;height:260px;width:100%;}
-.feat-list{display:flex;flex-direction:column;gap:0;}
+/* ── INSIGHTS ── */
+#insights{background:var(--surface)}
+.ig{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:start}
+.chart-box{background:var(--white);border:1px solid var(--rule);padding:24px}
+.chart-lbl{font:var(--t-label);letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:16px}
+.chart-wrap{position:relative;height:250px;width:100%}
+.ftable{display:flex;flex-direction:column}
 .frow{
-  display:flex;align-items:flex-start;gap:16px;
-  padding:18px 0;
-  border-bottom:1px solid var(--border);
+  display:grid;grid-template-columns:22px 1fr 100px;
+  gap:12px;align-items:center;
+  padding:14px 0;border-bottom:1px solid var(--rule);
+  transition:background .15s
 }
-.frow:last-child{border-bottom:none;}
-.frow-rank{
-  font-family:'Syne',sans-serif;
-  font-weight:800;
-  font-size:32px;
-  color:var(--gray3);
-  line-height:1;
-  flex-shrink:0;
-  width:40px;
-}
-.frow-body{}
-.frow-title{
-  font-family:'Syne',sans-serif;
-  font-weight:700;
-  font-size:14px;
-  text-transform:uppercase;
-  letter-spacing:0.04em;
-  margin-bottom:2px;
-}
-.frow-desc{font-size:12px;color:var(--gray);font-weight:300;line-height:1.5;}
-.frow-gini{
-  font-family:'Syne Mono',monospace;
-  font-size:10px;
-  color:var(--orange);
-  margin-left:auto;
-  flex-shrink:0;
-  padding-top:4px;
-}
+.frow:last-child{border-bottom:none}
+.frow:hover{background:rgba(232,66,10,.04)}
+.fn{font:var(--t-label);color:var(--orange)}
+.fname{font:600 14px/1.3 'Plus Jakarta Sans',sans-serif;color:var(--black)}
+.fdesc{font:300 11px/1.5 'Plus Jakarta Sans',sans-serif;color:var(--gray);margin-top:2px}
+.fbar{display:flex;align-items:center;gap:8px}
+.fbar-track{flex:1;height:2px;background:var(--rule)}
+.fbar-fill{height:100%;background:var(--orange)}
+.fpct{font:var(--t-label);color:var(--gray);min-width:28px;text-align:right}
 
 /* ── SHAP ── */
-#shap{background:var(--black);color:var(--white);border-bottom:none;}
-#shap .sec-num{color:rgba(255,255,255,0.3);}
-#shap .sec-title{color:var(--white);}
-#shap .sec-desc{color:rgba(255,255,255,0.4);}
-#shap .sec-header{border-bottom-color:rgba(255,255,255,0.1);}
-.shap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.1);margin-bottom:48px;}
-.shap-cell{
-  background:var(--black);
-  padding:28px 24px;
-  transition:background 0.2s;
+#shap{background:var(--black)}
+#shap .sh-title{color:var(--white)}
+#shap .sh-num{color:var(--orange)}
+#shap .sh-desc{color:#444}
+#shap .sh{border-bottom-color:#222}
+.shap-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#222;margin-bottom:1px}
+.sc{
+  background:var(--black);padding:24px 20px;
+  transition:background .2s
 }
-.shap-cell:hover{background:#1a1a1a;}
-.shap-cell-num{
-  font-family:'Syne',sans-serif;
-  font-weight:800;
-  font-size:40px;
-  color:rgba(255,255,255,0.08);
-  line-height:1;
-  margin-bottom:12px;
+.sc:hover{background:#111}
+.sc-tag{font:var(--t-label);letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin-bottom:10px}
+.sc-name{
+  font:700 17px/1.2 'Fraunces',serif;
+  color:var(--white);margin-bottom:6px
 }
-.shap-cell-tag{
-  font-family:'Syne Mono',monospace;
-  font-size:9px;
-  letter-spacing:0.15em;
-  text-transform:uppercase;
-  color:var(--orange);
-  margin-bottom:6px;
-}
-.shap-cell-name{
-  font-family:'Syne',sans-serif;
-  font-weight:700;
-  font-size:16px;
-  color:var(--white);
-  margin-bottom:8px;
-}
-.shap-cell-desc{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.55;font-weight:300;}
-/* SHAP image grid */
-.shap-imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.08);}
-.shap-img-box{background:#0d0d0d;padding:20px;display:flex;flex-direction:column;gap:10px;}
-.shap-img-label{font-family:'Syne Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--orange);}
-.shap-img-box img{width:100%;height:auto;display:block;border-radius:2px;filter:brightness(0.96);}
-@media(max-width:768px){.shap-imgs{grid-template-columns:1fr;}}
-/* SHAP bars */
-.shap-bars-wrap{border:1px solid rgba(255,255,255,0.1);padding:24px;}
-.shap-bars-label{
-  font-family:'Syne Mono',monospace;
-  font-size:9px;
-  letter-spacing:0.15em;
-  text-transform:uppercase;
-  color:rgba(255,255,255,0.3);
-  margin-bottom:20px;
-}
-.sbar{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
-.sbar:last-child{border-bottom:none;}
-.sbar-name{font-family:'Syne Mono',monospace;font-size:11px;color:rgba(255,255,255,0.5);width:180px;flex-shrink:0;}
-.sbar-track{flex:1;height:4px;background:rgba(255,255,255,0.06);}
-.sbar-fill{height:100%;background:var(--orange);transition:width 1.2s cubic-bezier(.4,0,.2,1);}
-.sbar-val{font-family:'Syne Mono',monospace;font-size:10px;color:var(--orange);width:40px;text-align:right;flex-shrink:0;}
+.sc-desc{font:300 12px/1.55 'Plus Jakarta Sans',sans-serif;color:#555}
+.shap-imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#222}
+.si{background:#0d0d0d;padding:16px;display:flex;flex-direction:column;gap:10px}
+.si-lbl{font:var(--t-label);letter-spacing:.14em;text-transform:uppercase;color:var(--orange)}
+.si img{width:100%;height:auto;display:block;border-radius:2px}
 
-/* ── Performance ── */
-#performance{background:var(--white);}
-.perf-top{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:0;
-  border:1.5px solid var(--border);
-  margin-bottom:48px;
-  overflow:hidden;
+/* ── PERFORMANCE ── */
+#performance{background:var(--white)}
+.perf-big{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border:1px solid var(--rule);margin-bottom:36px;overflow:hidden;border-radius:3px
 }
-.perf-cell{
-  padding:36px 28px;
-  border-right:1px solid var(--border);
-  position:relative;
-  overflow:hidden;
+.pc{
+  padding:40px 32px;border-right:1px solid var(--rule);text-align:center
 }
-.perf-cell:last-child{border-right:none;}
-.perf-cell::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:var(--orange);
-  transform:scaleX(0);transform-origin:left;
-  transition:transform 0.5s ease;
+.pc:last-child{border-right:none;background:var(--orange)}
+/* performance num = headline scale */
+.pc-n{
+  font:700 clamp(36px,4vw,56px)/1 'Fraunces',serif;
+  color:var(--black);display:block;margin-bottom:8px
 }
-.perf-cell:hover::before{transform:scaleX(1);}
-.perf-num{
-  font-family:'Syne',sans-serif;
-  font-weight:800;
-  font-size:40px;
-  line-height:1;
-  color:var(--black);
-  margin-bottom:6px;
+.pc:last-child .pc-n{color:var(--white)}
+/* perf label = sub2 */
+.pc-l{
+  font:var(--t-label);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gray)
 }
-.perf-label{
-  font-family:'Syne Mono',monospace;
-  font-size:9px;
-  letter-spacing:0.15em;
-  text-transform:uppercase;
-  color:var(--orange);
+.pc:last-child .pc-l{color:rgba(255,255,255,.65)}
+.pc-s{font:300 11px/1 'Plus Jakarta Sans',sans-serif;color:var(--gray);margin-top:5px}
+.pc:last-child .pc-s{color:rgba(255,255,255,.45)}
+
+/* model table */
+.mtbl{border:1px solid var(--rule);border-radius:3px;overflow:hidden;margin-bottom:28px}
+.mtbl-h{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+  padding:10px 20px;background:var(--black);
+  font:var(--t-label);letter-spacing:.1em;text-transform:uppercase;color:#444
 }
-.perf-sub{font-size:11px;color:var(--gray);margin-top:4px;font-weight:300;}
-/* Model table */
-.mtable{width:100%;border-collapse:collapse;margin-bottom:48px;}
-.mtable th{
-  font-family:'Syne Mono',monospace;
-  font-size:9px;
-  letter-spacing:0.15em;
-  text-transform:uppercase;
-  color:var(--gray);
-  padding:12px 16px;
-  border-bottom:1.5px solid var(--black);
-  text-align:left;
-  font-weight:400;
+.mtbl-r{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+  padding:13px 20px;border-bottom:1px solid var(--rule);
+  font:300 13px/1 'Plus Jakarta Sans',sans-serif;
+  transition:background .15s
 }
-.mtable td{
-  font-size:13px;
-  padding:12px 16px;
-  border-bottom:1px solid var(--border);
-  color:var(--gray);
-  font-family:'Syne Mono',monospace;
-}
-.mtable tr.winner td{color:var(--black);}
-.mtable tr:hover td{background:var(--gray3);}
-.mtable .model-name{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.02em;text-transform:uppercase;}
-.mtable tr.winner .model-name{color:var(--orange);}
-/* Interactive chart */
-.chart-tabs{display:flex;gap:0;margin-bottom:24px;}
+.mtbl-r:last-child{border-bottom:none}
+.mtbl-r:hover{background:rgba(232,66,10,.04)}
+.mtbl-r.win{background:var(--orange)}
+.mtbl-r.win *{color:var(--white)!important}
+.mname{font:600 14px/1 'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:6px}
+.mval{font:var(--t-label);color:var(--gray);align-self:center}
+.chart-tabs{display:flex;gap:0;margin-bottom:0}
 .ctab{
-  font-family:'Syne Mono',monospace;
-  font-size:10px;
-  letter-spacing:0.1em;
-  text-transform:uppercase;
-  padding:8px 20px;
-  border:1.5px solid var(--border);
-  background:transparent;
-  color:var(--gray);
-  cursor:none;
-  transition:all 0.15s;
-  margin-right:-1px;
+  font:var(--t-label);letter-spacing:.1em;
+  padding:8px 16px;border:1px solid var(--rule);border-right:none;
+  color:var(--gray);background:transparent;cursor:none;transition:all .15s
 }
-.ctab.active,.ctab:hover{background:var(--black);color:var(--white);border-color:var(--black);z-index:1;position:relative;}
-.model-chart-wrap{border:1.5px solid var(--border);padding:24px;}
-.model-chart-container{position:relative;height:300px;}
+.ctab:last-child{border-right:1px solid var(--rule)}
+.ctab.on,.ctab:hover{background:var(--black);color:var(--white);border-color:var(--black)}
+.mchart-wrap{
+  border:1px solid var(--rule);border-top:none;padding:24px;
+}
+.mchart-inner{position:relative;height:280px}
 
-/* ── Document ── */
-#document{background:var(--gray3);}
-.pdf-frame{
-  border:1.5px solid var(--border);
-  aspect-ratio:16/9;
-  overflow:hidden;
-  background:var(--white);
-}
-.pdf-frame iframe{width:100%;height:100%;border:none;}
+/* ── DOCUMENT ── */
+#document{background:var(--surface)}
+.pdf-wrap{border:1px solid var(--rule);aspect-ratio:16/9;overflow:hidden;border-radius:3px}
+.pdf-wrap iframe{width:100%;height:100%;border:none}
 
-/* ── Footer ── */
-footer{
-  background:var(--black);
-  padding:24px 32px;
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:12px;
+/* ── FOOTER ── */
+footer{background:var(--black);padding:0;border-top:1px solid #1a1a1a}
+.foot-big{
+  font:900 clamp(36px,7vw,96px)/1 'Fraunces',serif;
+  letter-spacing:-.03em;color:rgba(255,255,255,.05);
+  padding:32px 40px 0;overflow:hidden;white-space:nowrap;
+  transition:color .4s;cursor:none;user-select:none
 }
-.footer-copy{
-  font-family:'Syne Mono',monospace;
-  font-size:10px;
-  letter-spacing:0.1em;
-  color:rgba(255,255,255,0.3);
+.foot-big:hover{color:rgba(232,66,10,.1)}
+.foot-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:20px 40px 32px;margin-top:20px;
+  border-top:1px solid #1a1a1a;flex-wrap:wrap;gap:12px
 }
-.gh-btn{
+.foot-copy{font:var(--t-label);letter-spacing:.08em;color:#333}
+.gh{
   display:inline-flex;align-items:center;gap:6px;
-  font-family:'Syne Mono',monospace;
-  font-size:10px;
-  letter-spacing:0.08em;
-  color:rgba(255,255,255,0.5);
-  border:1px solid rgba(255,255,255,0.15);
-  padding:6px 14px;
-  text-decoration:none;
-  transition:all 0.2s;
+  font:var(--t-label);letter-spacing:.08em;
+  color:#3a3a3a;border:1px solid #2a2a2a;
+  padding:7px 14px;text-decoration:none;border-radius:2px;
+  transition:all .15s
 }
-.gh-btn:hover{color:var(--white);border-color:var(--white);}
+.gh:hover{color:var(--white);background:var(--orange);border-color:var(--orange)}
 
-/* ── Fade in ── */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease;}
-.reveal.in{opacity:1;transform:none;}
+/* ── reveal ── */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.rv.in{opacity:1;transform:none}
 
-/* ── Responsive ── */
+/* ── mobile ── */
 @media(max-width:768px){
-  nav{padding:0 16px;}
-  .nav-links{display:none;}
-  .sec-inner{padding:48px 16px;}
-  .hero-h1{font-size:clamp(40px,12vw,72px);}
-  .sec-header{flex-direction:column;}
-  .sec-desc{text-align:left;max-width:100%;}
-  .insights-layout{grid-template-columns:1fr;}
-  .shap-grid{grid-template-columns:1fr;}
-  .perf-top{grid-template-columns:1fr;}
-  .perf-cell{border-right:none;border-bottom:1px solid var(--border);}
-  .flow{grid-template-columns:1fr 1fr;}
-  #overview{padding:100px 16px 48px;}
-  .hero-bottom{flex-direction:column;align-items:flex-start;}
-  .hstat{padding:0 16px;}
+  nav{padding:0 20px}
+  .nav-links{display:none}
+  #overview,.wrap{padding-left:20px;padding-right:20px}
+  .hero-stats{grid-template-columns:1fr 1fr;gap:20px}
+  .hstat{padding:0;text-align:left;border-right:none}
+  .ig{grid-template-columns:1fr}
+  .flow{grid-template-columns:1fr}
+  .fc{border-right:none;border-bottom:1px solid #222}
+  .shap-cards,.shap-imgs{grid-template-columns:1fr}
+  .perf-big{grid-template-columns:1fr}
+  .pc{border-right:none;border-bottom:1px solid var(--rule)}
+  .mtbl-h,.mtbl-r{grid-template-columns:2fr 1fr 1fr}
+  .mtbl-h>*:last-child,.mtbl-r>*:last-child{display:none}
+  .sh{flex-direction:column;align-items:flex-start}
+  .sh-desc{text-align:left;max-width:100%}
 }
 </style>
 </head>
 <body>
 
-<!-- cursor -->
-<div class="cursor cursor-ring" id="ring"></div>
-<div class="cursor cursor-dot" id="dot"></div>
+<div id="c"></div>
 
-<!-- Nav -->
+<!-- NAV -->
 <nav>
-  <a href="#overview" class="nav-logo">Alzheimer's ML</a>
-  <div class="nav-right">
-    <div class="nav-links">
-      <a href="#framework" data-i18n="nav_framework">Framework</a>
-      <a href="#models" data-i18n="nav_models">Models</a>
-      <a href="#insights" data-i18n="nav_insights">Insights</a>
-      <a href="#shap">SHAP</a>
-      <a href="#performance" data-i18n="nav_perf">Performance</a>
-      <a href="#document" data-i18n="nav_doc">Document</a>
-    </div>
-    <div class="lang-switcher">
-      <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
-      <button class="lang-btn" onclick="setLang('th',this)">TH</button>
-      <button class="lang-btn" onclick="setLang('zh',this)">中文</button>
-    </div>
+  <div class="nav-logo">Alzheimer's ML</div>
+  <div class="nav-links">
+    <a href="#framework" data-i18n="nav_framework">Framework</a>
+    <a href="#models" data-i18n="nav_models">Models</a>
+    <a href="#insights" data-i18n="nav_insights">Insights</a>
+    <a href="#shap">SHAP</a>
+    <a href="#performance" data-i18n="nav_perf">Performance</a>
+    <a href="#document" data-i18n="nav_doc">Document</a>
+  </div>
+  <div class="lang-sw">
+    <button class="lb on" onclick="setLang('en',this)">EN</button>
+    <button class="lb" onclick="setLang('th',this)">TH</button>
+    <button class="lb" onclick="setLang('zh',this)">中文</button>
   </div>
 </nav>
 
-<!-- Hero -->
+<!-- HERO -->
 <section id="overview">
-
-  <!-- eyebrow -->
-  <div class="hero-tag" data-i18n="eyebrow">Final Project · Big Data Analytics · December 2025</div>
-
-  <!-- full title -->
-  <h1 class="hero-h1">
-    <span data-i18n="hero_l1">Alzheimer's Disease</span><br>
-    <span class="accent" data-i18n="hero_l2">Prediction</span><br>
-    <span data-i18n="hero_l3">&amp; Comprehensive</span><br>
-    <span data-i18n="hero_l4">Data Analysis</span><br>
-    <span class="italic" data-i18n="hero_l5">Using Machine Learning</span>
+  <div class="hero-eyebrow" data-i18n="eyebrow">Final Project · Big Data Analytics · December 2025</div>
+  <h1 class="hero-title">
+    <span data-i18n="ht1">Alzheimer's Disease</span><br>
+    <span class="orange" data-i18n="ht2">Prediction</span><br>
+    <span data-i18n="ht3">&amp; Comprehensive Data Analysis</span><br>
+    <span class="sub" data-i18n="ht4">Using Machine Learning</span>
   </h1>
-
-  <!-- meta row: left = credits, right = stats -->
-  <div class="hero-bottom">
-    <div class="hero-meta-block">
-      <div class="hero-credits" data-i18n="hero_advisor">Advised by Prof. Chung Yung &amp; TA Demiah Kisla Charlery</div>
-      <div class="hero-credits">CSIE, NDHU</div>
-      <div class="hero-author" style="margin-top:8px">
+  <div class="hero-meta">
+    <div class="hero-info">
+      <div class="hero-info-line" data-i18n="advisor">Advised by Prof. Chung Yung &amp; TA Demiah Kisla Charlery</div>
+      <div class="hero-info-line">CSIE, NDHU</div>
+      <div class="hero-name">
         <a href="https://mato8q.github.io/imnotmato8q.github.io/" target="_blank">Supharada Jundok
           <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-left:4px"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
         </a>
@@ -575,94 +398,114 @@ footer{
     </div>
     <div class="hero-stats">
       <div class="hstat">
-        <span class="hstat-num">96<small>%</small></span>
-        <span class="hstat-label" data-i18n="stat_acc">Test Accuracy</span>
+        <span class="hstat-n">96<sup>%</sup></span>
+        <span class="hstat-l" data-i18n="s_acc">Test Accuracy</span>
       </div>
       <div class="hstat">
-        <span class="hstat-num">11</span>
-        <span class="hstat-label" data-i18n="stat_models">Models</span>
+        <span class="hstat-n">11</span>
+        <span class="hstat-l" data-i18n="s_models">Models</span>
       </div>
       <div class="hstat">
-        <span class="hstat-num">2,149</span>
-        <span class="hstat-label" data-i18n="stat_patients">Patients</span>
+        <span class="hstat-n">2,149</span>
+        <span class="hstat-l" data-i18n="s_patients">Patients</span>
       </div>
       <div class="hstat">
-        <span class="hstat-num">5</span>
-        <span class="hstat-label" data-i18n="stat_features">Features</span>
+        <span class="hstat-n">5</span>
+        <span class="hstat-l" data-i18n="s_feat">Features</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Framework -->
+<!-- FRAMEWORK -->
 <section id="framework">
-  <div class="sec-inner">
-    <div class="sec-header reveal">
-      <div>
-        <div class="sec-num" data-i18n="tag_01">01 · Methodology</div>
-        <div class="sec-title" data-i18n="sec_framework">Framework</div>
+  <div class="wrap">
+    <div class="sh rv">
+      <div class="sh-left">
+        <div class="sh-num" data-i18n="n01">01 · Methodology</div>
+        <div class="sh-title" data-i18n="t_fw">Project Framework</div>
       </div>
-      <p class="sec-desc" data-i18n="desc_framework">A five-stage analytical pipeline from raw clinical data to interpretable ML predictions.</p>
+      <div class="sh-desc" data-i18n="d_fw">Five-stage analytical pipeline from raw clinical data to interpretable ML predictions.</div>
     </div>
-    <div class="flow reveal">
-      <div class="flow-step"><span class="fn">01</span><span class="ft" data-i18n="flow_1">Dataset Acquisition</span></div>
-      <div class="flow-step"><span class="fn">02</span><span class="ft" data-i18n="flow_2">Data Exploration &amp; Cleaning</span></div>
-      <div class="flow-step"><span class="fn">03</span><span class="ft" data-i18n="flow_3">Exploratory Data Analysis</span></div>
-      <div class="flow-step"><span class="fn">04</span><span class="ft" data-i18n="flow_4">Feature Selection</span></div>
-      <div class="flow-step active"><span class="fn">05</span><span class="ft" data-i18n="flow_5">Machine Learning Modeling</span></div>
+    <div class="flow rv">
+      <div class="fc"><div class="fc-n">01</div><div class="fc-t" data-i18n="fw1">Dataset Acquisition</div></div>
+      <div class="fc"><div class="fc-n">02</div><div class="fc-t" data-i18n="fw2">Data Exploration &amp; Cleaning</div></div>
+      <div class="fc"><div class="fc-n">03</div><div class="fc-t" data-i18n="fw3">Exploratory Data Analysis</div></div>
+      <div class="fc"><div class="fc-n">04</div><div class="fc-t" data-i18n="fw4">Feature Selection</div></div>
+      <div class="fc"><div class="fc-n">05</div><div class="fc-t" data-i18n="fw5">ML Modeling</div></div>
     </div>
   </div>
 </section>
 
-<!-- Models -->
+<!-- MODELS -->
 <section id="models">
-  <div class="sec-inner">
-    <div class="sec-header reveal">
-      <div>
-        <div class="sec-num" data-i18n="tag_02">02 · Experimental Setup</div>
-        <div class="sec-title" data-i18n="sec_models">11 Models</div>
+  <div class="wrap">
+    <div class="sh rv">
+      <div class="sh-left">
+        <div class="sh-num" data-i18n="n02">02 · Experimental Setup</div>
+        <div class="sh-title" data-i18n="t_models">11 Models Evaluated</div>
       </div>
-      <p class="sec-desc" data-i18n="desc_models">Comprehensive comparison to find the most robust Alzheimer's predictor.</p>
+      <div class="sh-desc" data-i18n="d_models">Comprehensive comparison to identify the most robust Alzheimer's predictor.</div>
     </div>
-    <div class="model-grid reveal">
-      <span class="model-chip best">★ Random Forest</span>
-      <span class="model-chip">Extra Trees</span>
-      <span class="model-chip">XGBoost</span>
-      <span class="model-chip">LightGBM</span>
-      <span class="model-chip">Gradient Boosting</span>
-      <span class="model-chip">SVM</span>
-      <span class="model-chip">Logistic Regression</span>
-      <span class="model-chip">Decision Tree</span>
-      <span class="model-chip">Naive Bayes</span>
-      <span class="model-chip">KNN</span>
-      <span class="model-chip">MLP Neural Network</span>
+    <div class="chips rv">
+      <div class="chip best">★ Random Forest</div>
+      <div class="chip">Extra Trees</div>
+      <div class="chip">XGBoost</div>
+      <div class="chip">LightGBM</div>
+      <div class="chip">Gradient Boosting</div>
+      <div class="chip">SVM</div>
+      <div class="chip">Logistic Regression</div>
+      <div class="chip">Decision Tree</div>
+      <div class="chip">Naive Bayes</div>
+      <div class="chip">KNN</div>
+      <div class="chip">MLP Neural Network</div>
     </div>
   </div>
 </section>
 
-<!-- Insights -->
+<!-- INSIGHTS -->
 <section id="insights">
-  <div class="sec-inner">
-    <div class="sec-header reveal">
-      <div>
-        <div class="sec-num" data-i18n="tag_03">03 · Feature Analysis</div>
-        <div class="sec-title" data-i18n="sec_features">Key Features</div>
+  <div class="wrap">
+    <div class="sh rv">
+      <div class="sh-left">
+        <div class="sh-num" data-i18n="n03">03 · Feature Analysis</div>
+        <div class="sh-title" data-i18n="t_insights">Key Predictive Features</div>
       </div>
-      <p class="sec-desc" data-i18n="desc_features">Identified via Gini Importance and validated through EDA statistical tests.</p>
+      <div class="sh-desc" data-i18n="d_insights">Identified via Gini Importance, validated through EDA statistical tests.</div>
     </div>
-    <div class="insights-layout reveal">
+    <div class="ig rv">
       <div>
-        <div class="chart-panel">
-          <div class="chart-label" data-i18n="gini_label">Gini Importance Score</div>
-          <div class="chart-container"><canvas id="featureChart"></canvas></div>
+        <div class="chart-box">
+          <div class="chart-lbl" data-i18n="gini_lbl">Gini Importance Score</div>
+          <div class="chart-wrap"><canvas id="featChart"></canvas></div>
         </div>
       </div>
-      <div class="feat-list">
-        <div class="frow"><span class="frow-rank">01</span><div class="frow-body"><div class="frow-title" data-i18n="feat1_title">Functional Assessment</div><div class="frow-desc" data-i18n="feat1_desc">Primary driver. Captures patients' ability to perform complex daily functions.</div></div><span class="frow-gini">0.35</span></div>
-        <div class="frow"><span class="frow-rank">02</span><div class="frow-body"><div class="frow-title" data-i18n="feat2_title">ADL Index</div><div class="frow-desc" data-i18n="feat2_desc">Activities of Daily Living show strong correlation with disease presence.</div></div><span class="frow-gini">0.22</span></div>
-        <div class="frow"><span class="frow-rank">03</span><div class="frow-body"><div class="frow-title" data-i18n="feat3_title">MMSE Score</div><div class="frow-desc" data-i18n="feat3_desc">Clinical cognitive screening — validated by t-test (p &lt; 0.001).</div></div><span class="frow-gini">0.15</span></div>
-        <div class="frow"><span class="frow-rank">04</span><div class="frow-body"><div class="frow-title" data-i18n="feat4_title">Memory Complaints</div><div class="frow-desc" data-i18n="feat4_desc">Patient-reported memory issues as early-stage behavioral indicator.</div></div><span class="frow-gini">0.08</span></div>
-        <div class="frow"><span class="frow-rank">05</span><div class="frow-body"><div class="frow-title" data-i18n="feat5_title">Behavioral Problems</div><div class="frow-desc" data-i18n="feat5_desc">Behavioral symptoms contribute incrementally to classification.</div></div><span class="frow-gini">0.05</span></div>
+      <div class="ftable">
+        <div class="frow">
+          <div class="fn">01</div>
+          <div><div class="fname" data-i18n="f1n">Functional Assessment</div><div class="fdesc" data-i18n="f1d">Primary driver — captures complex daily function ability.</div></div>
+          <div class="fbar"><div class="fbar-track"><div class="fbar-fill" style="width:100%"></div></div><div class="fpct">35%</div></div>
+        </div>
+        <div class="frow">
+          <div class="fn">02</div>
+          <div><div class="fname" data-i18n="f2n">ADL Index</div><div class="fdesc" data-i18n="f2d">Strong correlation with disease presence and progression.</div></div>
+          <div class="fbar"><div class="fbar-track"><div class="fbar-fill" style="width:63%"></div></div><div class="fpct">22%</div></div>
+        </div>
+        <div class="frow">
+          <div class="fn">03</div>
+          <div><div class="fname" data-i18n="f3n">MMSE Score</div><div class="fdesc" data-i18n="f3d">Core clinical cognitive screening (p &lt; 0.001).</div></div>
+          <div class="fbar"><div class="fbar-track"><div class="fbar-fill" style="width:43%"></div></div><div class="fpct">15%</div></div>
+        </div>
+        <div class="frow">
+          <div class="fn">04</div>
+          <div><div class="fname" data-i18n="f4n">Memory Complaints</div><div class="fdesc" data-i18n="f4d">Meaningful early-stage behavioral indicator.</div></div>
+          <div class="fbar"><div class="fbar-track"><div class="fbar-fill" style="width:23%"></div></div><div class="fpct">8%</div></div>
+        </div>
+        <div class="frow">
+          <div class="fn">05</div>
+          <div><div class="fname" data-i18n="f5n">Behavioral Problems</div><div class="fdesc" data-i18n="f5d">Incremental contribution to classification decision.</div></div>
+          <div class="fbar"><div class="fbar-track"><div class="fbar-fill" style="width:14%"></div></div><div class="fpct">5%</div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -670,309 +513,317 @@ footer{
 
 <!-- SHAP -->
 <section id="shap">
-  <div class="sec-inner">
-    <div class="sec-header reveal">
-      <div>
-        <div class="sec-num" data-i18n="tag_04">04 · Explainability</div>
-        <div class="sec-title" data-i18n="sec_shap">SHAP Analysis</div>
+  <div class="wrap">
+    <div class="sh rv">
+      <div class="sh-left">
+        <div class="sh-num" data-i18n="n04">04 · Explainability</div>
+        <div class="sh-title" data-i18n="t_shap">SHAP Analysis</div>
       </div>
-      <p class="sec-desc" data-i18n="desc_shap">Game-theory-grounded feature attribution — opening the Random Forest black box.</p>
+      <div class="sh-desc" data-i18n="d_shap">Opening the Random Forest black box with game-theory-grounded feature attribution.</div>
     </div>
-    <div class="shap-grid reveal">
-      <div class="shap-cell"><div class="shap-cell-num">01</div><div class="shap-cell-tag">Global · Beeswarm</div><div class="shap-cell-name" data-i18n="shap1_name">Summary Plot</div><div class="shap-cell-desc" data-i18n="shap1_desc">SHAP value distribution per sample. Color = feature value — red high, blue low.</div></div>
-      <div class="shap-cell"><div class="shap-cell-num">02</div><div class="shap-cell-tag">Global · Bar</div><div class="shap-cell-name" data-i18n="shap2_name">Mean |SHAP|</div><div class="shap-cell-desc" data-i18n="shap2_desc">Global feature ranking via mean absolute SHAP across all test samples.</div></div>
-      <div class="shap-cell"><div class="shap-cell-num">03</div><div class="shap-cell-tag">Local · Individual</div><div class="shap-cell-name" data-i18n="shap3_name">Waterfall Plot</div><div class="shap-cell-desc" data-i18n="shap3_desc">Single patient breakdown — each feature's contribution from base value to prediction.</div></div>
+    <div class="shap-cards rv">
+      <div class="sc">
+        <div class="sc-tag">Plot 01 · Global</div>
+        <div class="sc-name" data-i18n="sh1n">Mean |SHAP| Bar</div>
+        <div class="sc-desc" data-i18n="sh1d">FunctionalAssessment (~0.190) ranks first, followed by ADL (~0.172), MemoryComplaints (~0.125), MMSE (~0.115), BehavioralProblems (~0.090).</div>
+      </div>
+      <div class="sc">
+        <div class="sc-tag">Plot 02 · Global</div>
+        <div class="sc-name" data-i18n="sh2n">Beeswarm Summary</div>
+        <div class="sc-desc" data-i18n="sh2d">High MMSE (red) spreads far left — strongly rules out Alzheimer's. MemoryComplaints & BehavioralProblems show binary cluster pattern.</div>
+      </div>
+      <div class="sc">
+        <div class="sc-tag">Plot 03 · Local</div>
+        <div class="sc-name" data-i18n="sh3n">Waterfall · Sample 1</div>
+        <div class="sc-desc" data-i18n="sh3d">Base 0.5 → f(x)=1.0. FunctionalAssessment +0.27, ADL +0.25 drove the Alzheimer's classification.</div>
+      </div>
     </div>
-    <div class="shap-imgs reveal">
-      <div class="shap-img-box">
-        <div class="shap-img-label">01 · Mean |SHAP| Bar</div>
-        <img src="https://raw.githubusercontent.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML/main/assets/shap_bar_importance.png"
-             alt="SHAP Feature Importance Bar Plot" loading="lazy">
+    <div class="shap-imgs rv">
+      <div class="si">
+        <div class="si-lbl">01 · Mean |SHAP| Bar</div>
+        <img src="https://raw.githubusercontent.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML/main/assets/shap_bar_importance.png" alt="SHAP Bar Plot" loading="lazy">
       </div>
-      <div class="shap-img-box">
-        <div class="shap-img-label">02 · Beeswarm Summary</div>
-        <img src="https://raw.githubusercontent.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML/main/assets/shap_summary_beeswarm.png"
-             alt="SHAP Beeswarm Summary Plot" loading="lazy">
+      <div class="si">
+        <div class="si-lbl">02 · Beeswarm Summary</div>
+        <img src="https://raw.githubusercontent.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML/main/assets/shap_summary_beeswarm.png" alt="SHAP Beeswarm" loading="lazy">
       </div>
-      <div class="shap-img-box">
-        <div class="shap-img-label">03 · Waterfall · Sample 1</div>
-        <img src="https://raw.githubusercontent.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML/main/assets/shap_waterfall_individual.png"
-             alt="SHAP Waterfall Individual Prediction" loading="lazy">
+      <div class="si">
+        <div class="si-lbl">03 · Waterfall · Sample 1</div>
+        <img src="https://raw.githubusercontent.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML/main/assets/shap_waterfall_individual.png" alt="SHAP Waterfall" loading="lazy">
       </div>
     </div>
   </div>
 </section>
 
-<!-- Performance -->
+<!-- PERFORMANCE -->
 <section id="performance">
-  <div class="sec-inner">
-    <div class="sec-header reveal">
-      <div>
-        <div class="sec-num" data-i18n="tag_05">05 · Results</div>
-        <div class="sec-title" data-i18n="sec_perf">Performance</div>
+  <div class="wrap">
+    <div class="sh rv">
+      <div class="sh-left">
+        <div class="sh-num" data-i18n="n05">05 · Results</div>
+        <div class="sh-title" data-i18n="t_perf">Model Performance</div>
       </div>
-      <p class="sec-desc" data-i18n="desc_perf">Random Forest — best across all 11 evaluated classifiers.</p>
+      <div class="sh-desc" data-i18n="d_perf">Random Forest — best across all 11 evaluated classifiers.</div>
     </div>
-    <div class="perf-top reveal">
-      <div class="perf-cell"><div class="perf-num">96.74%</div><div class="perf-label" data-i18n="perf_acc">Test Accuracy</div><div class="perf-sub" data-i18n="perf_acc_sub">Best across all models</div></div>
-      <div class="perf-cell"><div class="perf-num">97.48%</div><div class="perf-label" data-i18n="perf_auc">ROC-AUC</div><div class="perf-sub" data-i18n="perf_auc_sub">Strong discrimination</div></div>
-      <div class="perf-cell"><div class="perf-num">95.39%</div><div class="perf-label" data-i18n="perf_f1">F1-Score</div><div class="perf-sub" data-i18n="perf_f1_sub">Weighted average</div></div>
+    <div class="perf-big rv">
+      <div class="pc">
+        <span class="pc-n">96.74%</span>
+        <div class="pc-l" data-i18n="p_acc">Test Accuracy</div>
+        <div class="pc-s" data-i18n="p_acc_s">Best across all models</div>
+      </div>
+      <div class="pc">
+        <span class="pc-n">97.48%</span>
+        <div class="pc-l" data-i18n="p_auc">ROC-AUC</div>
+        <div class="pc-s" data-i18n="p_auc_s">Strong discrimination</div>
+      </div>
+      <div class="pc">
+        <span class="pc-n">95.39%</span>
+        <div class="pc-l" data-i18n="p_f1">F1-Score</div>
+        <div class="pc-s" data-i18n="p_f1_s">Weighted average</div>
+      </div>
     </div>
-    <table class="mtable reveal">
-      <thead><tr><th data-i18n="th_model">Model</th><th data-i18n="th_acc">Accuracy</th><th data-i18n="th_f1">F1 (Alz.)</th><th data-i18n="th_cv">CV Acc.</th></tr></thead>
-      <tbody>
-        <tr class="winner"><td class="model-name">★ Random Forest</td><td>96.74%</td><td>96.40%</td><td>96.51%</td></tr>
-        <tr><td class="model-name">Extra Trees</td><td>95.81%</td><td>95.50%</td><td>95.60%</td></tr>
-        <tr><td class="model-name">XGBoost</td><td>94.65%</td><td>94.20%</td><td>94.40%</td></tr>
-        <tr><td class="model-name">LightGBM</td><td>94.42%</td><td>93.90%</td><td>94.10%</td></tr>
-        <tr><td class="model-name">Gradient Boosting</td><td>93.95%</td><td>93.50%</td><td>93.70%</td></tr>
-        <tr><td class="model-name">SVM</td><td>87.21%</td><td>86.40%</td><td>87.00%</td></tr>
-      </tbody>
-    </table>
-    <div class="chart-tabs reveal">
-      <button class="ctab active" onclick="switchMetric('accuracy',this)" data-i18n="perf_acc">Accuracy</button>
-      <button class="ctab" onclick="switchMetric('f1',this)">F1 Score</button>
-      <button class="ctab" onclick="switchMetric('cv',this)">CV Accuracy</button>
+    <div class="mtbl rv">
+      <div class="mtbl-h">
+        <div data-i18n="th_m">Model</div>
+        <div data-i18n="th_a">Accuracy</div>
+        <div data-i18n="th_f">F1 (Alz.)</div>
+        <div data-i18n="th_c">CV Acc.</div>
+      </div>
+      <div class="mtbl-r win"><div class="mname">★ Random Forest</div><div class="mval">96.74%</div><div class="mval">96.40%</div><div class="mval">96.51%</div></div>
+      <div class="mtbl-r"><div class="mname">Extra Trees</div><div class="mval">95.81%</div><div class="mval">95.50%</div><div class="mval">95.60%</div></div>
+      <div class="mtbl-r"><div class="mname">XGBoost</div><div class="mval">94.65%</div><div class="mval">94.20%</div><div class="mval">94.40%</div></div>
+      <div class="mtbl-r"><div class="mname">LightGBM</div><div class="mval">94.42%</div><div class="mval">93.90%</div><div class="mval">94.10%</div></div>
+      <div class="mtbl-r"><div class="mname">Gradient Boosting</div><div class="mval">93.95%</div><div class="mval">93.50%</div><div class="mval">93.70%</div></div>
+      <div class="mtbl-r"><div class="mname">SVM</div><div class="mval">87.21%</div><div class="mval">86.40%</div><div class="mval">87.00%</div></div>
     </div>
-    <div class="model-chart-wrap reveal">
-      <div class="model-chart-container"><canvas id="modelChart"></canvas></div>
+    <div class="chart-tabs rv">
+      <button class="ctab on" onclick="swM('accuracy',this)" data-i18n="p_acc">Accuracy</button>
+      <button class="ctab" onclick="swM('f1',this)">F1 Score</button>
+      <button class="ctab" onclick="swM('cv',this)">CV Accuracy</button>
+    </div>
+    <div class="mchart-wrap rv">
+      <div class="mchart-inner"><canvas id="modelChart"></canvas></div>
     </div>
   </div>
 </section>
 
-<!-- Document -->
+<!-- DOCUMENT -->
 <section id="document">
-  <div class="sec-inner">
-    <div class="sec-header reveal">
-      <div>
-        <div class="sec-num" data-i18n="tag_06">06 · Report</div>
-        <div class="sec-title" data-i18n="sec_doc">Document</div>
+  <div class="wrap">
+    <div class="sh rv">
+      <div class="sh-left">
+        <div class="sh-num" data-i18n="n06">06 · Report</div>
+        <div class="sh-title" data-i18n="t_doc">Presentation Document</div>
       </div>
-      <p class="sec-desc" data-i18n="desc_doc">Full analysis, methodology, and experimental results.</p>
+      <div class="sh-desc" data-i18n="d_doc">Full analysis, methodology, and experimental results.</div>
     </div>
-    <div class="pdf-frame reveal">
-      <iframe src="presentation_note_compressed (2).pdf" title="Project Presentation"></iframe>
+    <div class="pdf-wrap rv">
+      <iframe src="https://raw.githubusercontent.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML/2698d7bc2915c422b877988cd9a15b6d826fdddf/presentation_note_compressed.pdf" title="Project PDF">
+        <p>PDF not available. <a href="https://raw.githubusercontent.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML/2698d7bc2915c422b877988cd9a15b6d826fdddf/presentation_note_compressed.pdf" style="color:var(--orange)">Download PDF</a></p>
+      </iframe>
     </div>
   </div>
 </section>
 
-<!-- Footer -->
+<!-- FOOTER -->
 <footer>
-  <span class="footer-copy"><span data-i18n="footer_copy">© 2025 Alzheimer's Disease Prediction Project</span></span>
-  <a href="https://github.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML" target="_blank" class="gh-btn">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-    GitHub Repo
-  </a>
+  <div class="foot-big">Alzheimer's Disease Prediction</div>
+  <div class="foot-bottom">
+    <div class="foot-copy" data-i18n="fc">© 2025 Alzheimer's Disease Prediction Project</div>
+    <a href="https://github.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML" target="_blank" class="gh">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub Repo
+    </a>
+  </div>
 </footer>
 
 <script>
 /* cursor */
-const ring=document.getElementById('ring'),dot=document.getElementById('dot');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
-(function loop(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(loop);})();
+const cr=document.getElementById('c');
+document.addEventListener('mousemove',e=>{cr.style.left=e.clientX+'px';cr.style.top=e.clientY+'px'});
+document.querySelectorAll('a,button,.chip,.fc,.mtbl-r,.frow').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cr.classList.add('big'));
+  el.addEventListener('mouseleave',()=>cr.classList.remove('big'));
+});
 
+/* charts */
 document.addEventListener('DOMContentLoaded',()=>{
-/* feature chart */
-const fctx=document.getElementById('featureChart').getContext('2d');
-new Chart(fctx,{
-  type:'bar',
-  data:{
-    labels:['FunctionalAssessment','ADL','MMSE','MemoryComplaints','BehavioralProblems'],
-    datasets:[{
-      data:[0.35,0.22,0.15,0.08,0.05],
-      backgroundColor:['#e84c1e','#e84c1e','#c8c4bc','#c8c4bc','#c8c4bc'],
-      borderRadius:0,borderSkipped:false,borderColor:'transparent'
-    }]
-  },
-  options:{
-    indexAxis:'y',responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{
-      backgroundColor:'#0d0d0d',titleColor:'#f5f2ed',bodyColor:'#6b6b6b',
-      callbacks:{label:c=>`  ${(c.raw*100).toFixed(0)}%`}
-    }},
-    scales:{
-      x:{beginAtZero:true,grid:{color:'#e8e4dc'},ticks:{color:'#6b6b6b',font:{family:'Syne Mono',size:10},callback:v=>(v*100).toFixed(0)+'%'},border:{color:'#d4d0c8'}},
-      y:{grid:{display:false},ticks:{color:'#6b6b6b',font:{family:'Syne Mono',size:10},padding:8},border:{color:'#d4d0c8'}}
+
+  /* feature chart */
+  new Chart(document.getElementById('featChart').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['Functional\nAssessment','ADL','MMSE','Memory\nComplaints','Behavioral\nProblems'],
+      datasets:[{data:[0.35,0.22,0.15,0.08,0.05],
+        backgroundColor:['#e8420a','#e8420a','#111','#111','#111'],
+        borderRadius:0,borderSkipped:false}]
+    },
+    options:{
+      indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'#111',titleColor:'#f7f4ef',bodyColor:'#888',
+          callbacks:{label:c=>`  ${(c.raw*100).toFixed(0)}%`}}},
+      scales:{
+        x:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.06)'},
+          ticks:{color:'#888',font:{family:'IBM Plex Mono',size:10},callback:v=>(v*100).toFixed(0)+'%'},
+          border:{color:'rgba(0,0,0,0.1)'}},
+        y:{grid:{display:false},
+          ticks:{color:'#111',font:{family:'IBM Plex Mono',size:10},padding:8},
+          border:{color:'rgba(0,0,0,0.1)'}}
+      }
     }
-  }
-});
+  });
 
-/* SHAP bars — real values from actual plots */
-const shap=[
-  {n:'FunctionalAssessment',v:0.190},
-  {n:'ADL',v:0.172},
-  {n:'MemoryComplaints',v:0.125},
-  {n:'MMSE',v:0.115},
-  {n:'BehavioralProblems',v:0.090},
-];
-const sb=document.getElementById('shap-bars-inner');
-shap.forEach(s=>{
-  const pct=(s.v/0.190*100).toFixed(0);
-  sb.innerHTML+=`<div class="sbar"><span class="sbar-name">${s.n}</span><div class="sbar-track"><div class="sbar-fill" style="width:${pct}%"></div></div><span class="sbar-val">${s.v.toFixed(3)}</span></div>`;
-});
-
-/* model chart */
-const mData={
-  labels:['Random Forest','Extra Trees','XGBoost','LightGBM','Grad. Boost','SVM','Logistic','Dec. Tree','Naive Bayes','KNN','MLP'],
-  accuracy:[96.74,95.81,94.65,94.42,93.95,87.21,85.12,83.40,79.65,82.33,88.60],
-  f1:[96.40,95.50,94.20,93.90,93.50,86.40,84.70,82.90,78.20,81.50,87.90],
-  cv:[96.51,95.60,94.40,94.10,93.70,87.00,85.00,83.10,79.40,82.10,88.20],
-};
-const mColors=mData.labels.map((_,i)=>i===0?'#e84c1e':'#c8c4bc');
-const mctx=document.getElementById('modelChart').getContext('2d');
-let mChart=new Chart(mctx,{
-  type:'bar',
-  data:{labels:mData.labels,datasets:[{label:'Accuracy (%)',data:mData.accuracy,backgroundColor:mColors,borderRadius:0,borderSkipped:false}]},
-  options:{
-    responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{backgroundColor:'#0d0d0d',titleColor:'#f5f2ed',bodyColor:'#6b6b6b',callbacks:{label:c=>`  ${c.raw.toFixed(2)}%`}}},
-    scales:{
-      x:{grid:{display:false},ticks:{color:'#6b6b6b',font:{family:'Syne Mono',size:9},maxRotation:30},border:{color:'#d4d0c8'}},
-      y:{min:70,grid:{color:'#e8e4dc'},ticks:{color:'#6b6b6b',font:{family:'Syne Mono',size:10},callback:v=>v+'%'},border:{color:'#d4d0c8'}}
+  /* model chart */
+  const MD={
+    labels:['Random\nForest','Extra\nTrees','XGBoost','LightGBM','Grad.\nBoosting','SVM','Log.\nReg.','Decision\nTree','Naive\nBayes','KNN','MLP'],
+    accuracy:[96.74,95.81,94.65,94.42,93.95,87.21,85.12,83.40,79.65,82.33,88.60],
+    f1:[96.40,95.50,94.20,93.90,93.50,86.40,84.70,82.90,78.20,81.50,87.90],
+    cv:[96.51,95.60,94.40,94.10,93.70,87.00,85.00,83.10,79.40,82.10,88.20],
+  };
+  const bg=MD.labels.map((_,i)=>i===0?'#e8420a':'#111');
+  const mCtx=document.getElementById('modelChart').getContext('2d');
+  let mChart=new Chart(mCtx,{
+    type:'bar',
+    data:{labels:MD.labels,datasets:[{data:MD.accuracy,label:'Accuracy (%)',
+      backgroundColor:bg,borderRadius:0,borderSkipped:false}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{backgroundColor:'#111',titleColor:'#f7f4ef',bodyColor:'#888',
+          callbacks:{label:c=>`  ${c.raw.toFixed(2)}%`}}},
+      scales:{
+        x:{grid:{display:false},
+          ticks:{color:'#888',font:{family:'IBM Plex Mono',size:9},maxRotation:0},
+          border:{color:'rgba(0,0,0,0.1)'}},
+        y:{min:70,grid:{color:'rgba(0,0,0,0.06)'},
+          ticks:{color:'#888',font:{family:'IBM Plex Mono',size:10},callback:v=>v+'%'},
+          border:{color:'rgba(0,0,0,0.1)'}}
+      }
     }
-  }
-});
-window.switchMetric=(m,btn)=>{
-  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  const labels={accuracy:'Accuracy (%)',f1:"F1 (%)",cv:'CV Accuracy (%)'};
-  mChart.data.datasets[0].data=mData[m];
-  mChart.data.datasets[0].label=labels[m];
-  mChart.update('active');
-};
+  });
+  window.swM=(m,btn)=>{
+    document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    mChart.data.datasets[0].data=MD[m];
+    mChart.update('active');
+  };
 
-/* scroll reveal */
-const io=new IntersectionObserver(entries=>{
-  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('in'),i*60);io.unobserve(e.target);}});
-},{threshold:0.1});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  /* scroll reveal */
+  const io=new IntersectionObserver(es=>{
+    es.forEach((e,i)=>{
+      if(e.isIntersecting){
+        setTimeout(()=>e.target.classList.add('in'),i*80);
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:0.07});
+  document.querySelectorAll('.rv').forEach(el=>io.observe(el));
 });
 
 /* i18n */
 const T={
   en:{
     eyebrow:'Final Project · Big Data Analytics · December 2025',
-    hero_l1:"Alzheimer's Disease",hero_l2:'Prediction',hero_l3:'& Comprehensive',
-    hero_l4:'Data Analysis',hero_l5:'Using Machine Learning',
-    hero_advisor:'Advised by Prof. Chung Yung &amp; TA Demiah Kisla Charlery',
-    stat_acc:'Test Accuracy',stat_models:'Models',stat_patients:'Patients',stat_features:'Features',
-    tag_01:'01 · Methodology',tag_02:'02 · Experimental Setup',tag_03:'03 · Feature Analysis',
-    tag_04:'04 · Explainability',tag_05:'05 · Results',tag_06:'06 · Report',
-    sec_framework:'Framework',sec_models:'11 Models',sec_features:'Key Features',
-    sec_shap:'SHAP Analysis',sec_perf:'Performance',sec_doc:'Document',
-    desc_framework:'A five-stage analytical pipeline from raw clinical data to interpretable ML predictions.',
-    desc_models:"Comprehensive comparison to find the most robust Alzheimer's predictor.",
-    desc_features:'Identified via Gini Importance and validated through EDA statistical tests.',
-    desc_shap:'Game-theory-grounded feature attribution — opening the Random Forest black box.',
-    desc_perf:'Random Forest — best across all 11 evaluated classifiers.',
-    desc_doc:'Full analysis, methodology, and experimental results.',
-    flow_1:'Dataset Acquisition',flow_2:'Data Exploration &amp; Cleaning',flow_3:'Exploratory Data Analysis',
-    flow_4:'Feature Selection',flow_5:'Machine Learning Modeling',
-    banner1:'Clinical Data Analysis',banner2:'Multi-Model Comparison',banner3:'SHAP Explainability',
-    gini_label:'Gini Importance Score',
-    feat1_title:'Functional Assessment',feat2_title:'ADL Index',feat3_title:'MMSE Score',
-    feat4_title:'Memory Complaints',feat5_title:'Behavioral Problems',
-    feat1_desc:"Primary driver. Captures patients' ability to perform complex daily functions.",
-    feat2_desc:'Activities of Daily Living show strong correlation with disease presence.',
-    feat3_desc:'Clinical cognitive screening — validated by t-test (p &lt; 0.001).',
-    feat4_desc:'Patient-reported memory issues as early-stage behavioral indicator.',
-    feat5_desc:'Behavioral symptoms contribute incrementally to classification.',
-    shap1_name:'Summary Plot',shap2_name:'Mean |SHAP|',shap3_name:'Waterfall Plot',
-    shap1_desc:'SHAP value distribution per sample. Color = feature value — red high, blue low.',
-    shap2_desc:'Global feature ranking via mean absolute SHAP across all test samples.',
-    shap3_desc:"Single patient breakdown — each feature's contribution from base value to prediction.",
-    shap_bar_title:'Mean |SHAP| — Impact on Alzheimer\'s Diagnosis (Class 1)',
-    perf_acc:'Test Accuracy',perf_auc:'ROC-AUC',perf_f1:'F1-Score',
-    perf_acc_sub:'Best across all models',perf_auc_sub:'Strong discrimination',perf_f1_sub:'Weighted average',
-    th_model:'Model',th_acc:'Accuracy',th_f1:'F1 (Alz.)',th_cv:'CV Acc.',
+    ht1:"Alzheimer's Disease",ht2:'Prediction',ht3:'& Comprehensive Data Analysis',ht4:'Using Machine Learning',
+    advisor:'Advised by Prof. Chung Yung & TA Demiah Kisla Charlery',
+    s_acc:'Test Accuracy',s_models:'Models',s_patients:'Patients',s_feat:'Features',
+    n01:'01 · Methodology',n02:'02 · Experimental Setup',n03:'03 · Feature Analysis',
+    n04:'04 · Explainability',n05:'05 · Results',n06:'06 · Report',
+    t_fw:'Project Framework',t_models:'11 Models Evaluated',t_insights:'Key Predictive Features',
+    t_shap:'SHAP Analysis',t_perf:'Model Performance',t_doc:'Presentation Document',
+    d_fw:'Five-stage analytical pipeline from raw clinical data to interpretable ML predictions.',
+    d_models:"Comprehensive comparison to identify the most robust Alzheimer's predictor.",
+    d_insights:'Identified via Gini Importance, validated through EDA statistical tests.',
+    d_shap:'Opening the Random Forest black box with game-theory-grounded feature attribution.',
+    d_perf:'Random Forest — best across all 11 evaluated classifiers.',
+    d_doc:'Full analysis, methodology, and experimental results.',
+    fw1:'Dataset Acquisition',fw2:'Data Exploration & Cleaning',fw3:'Exploratory Data Analysis',fw4:'Feature Selection',fw5:'ML Modeling',
+    gini_lbl:'Gini Importance Score',
+    f1n:'Functional Assessment',f1d:'Primary driver — captures complex daily function ability.',
+    f2n:'ADL Index',f2d:'Strong correlation with disease presence and progression.',
+    f3n:'MMSE Score',f3d:'Core clinical cognitive screening (p < 0.001).',
+    f4n:'Memory Complaints',f4d:'Meaningful early-stage behavioral indicator.',
+    f5n:'Behavioral Problems',f5d:'Incremental contribution to classification decision.',
+    sh1n:'Mean |SHAP| Bar',sh1d:'FunctionalAssessment (~0.190) ranks first, ADL (~0.172), MemoryComplaints (~0.125), MMSE (~0.115), BehavioralProblems (~0.090).',
+    sh2n:'Beeswarm Summary',sh2d:'High MMSE (red) spreads far left — strongly rules out Alzheimer\'s. Binary features show distinct cluster patterns.',
+    sh3n:'Waterfall · Sample 1',sh3d:'Base 0.5 → f(x)=1.0. FunctionalAssessment +0.27, ADL +0.25 drove the classification.',
+    p_acc:'Test Accuracy',p_auc:'ROC-AUC',p_f1:'F1-Score',
+    p_acc_s:'Best across all models',p_auc_s:'Strong discrimination',p_f1_s:'Weighted average',
+    th_m:'Model',th_a:'Accuracy',th_f:'F1 (Alz.)',th_c:'CV Acc.',
     nav_framework:'Framework',nav_models:'Models',nav_insights:'Insights',nav_perf:'Performance',nav_doc:'Document',
-    footer_copy:"© 2025 Alzheimer's Disease Prediction Project",
+    fc:"© 2025 Alzheimer's Disease Prediction Project",
   },
   th:{
-    eyebrow:'Final Project · วิชา Big Data Analytics · ธันวาคม 2568',
-    hero_l1:'การทำนายโรคอัลไซเมอร์',hero_l2:'การทำนาย',hero_l3:'และการวิเคราะห์',
-    hero_l4:'ข้อมูลเชิงลึก',hero_l5:'ด้วย Machine Learning',
-    hero_advisor:'อาจารย์ที่ปรึกษา ศจ. Chung Yung &amp; TA Demiah Kisla Charlery',
-    stat_acc:'ความแม่นยำ',stat_models:'โมเดล',stat_patients:'ผู้ป่วย',stat_features:'คุณลักษณะ',
-    tag_01:'01 · ระเบียบวิธี',tag_02:'02 · การตั้งค่า',tag_03:'03 · วิเคราะห์คุณลักษณะ',
-    tag_04:'04 · การอธิบายโมเดล',tag_05:'05 · ผลลัพธ์',tag_06:'06 · รายงาน',
-    sec_framework:'กรอบการทำงาน',sec_models:'11 โมเดล',sec_features:'คุณลักษณะหลัก',
-    sec_shap:'การวิเคราะห์ SHAP',sec_perf:'ประสิทธิภาพ',sec_doc:'เอกสาร',
-    desc_framework:'กระบวนการวิเคราะห์ 5 ขั้นตอน จากข้อมูลดิบสู่การทำนายที่ตีความได้',
-    desc_models:'การวิเคราะห์เปรียบเทียบเพื่อระบุตัวทำนายที่แม่นยำที่สุด',
-    desc_features:'ระบุผ่าน Gini Importance และยืนยันด้วยการทดสอบทางสถิติ',
-    desc_shap:'การวัดความสำคัญของคุณลักษณะจาก Game Theory',
-    desc_perf:'Random Forest ดีที่สุดในทุกโมเดลที่ประเมิน',
-    desc_doc:'การวิเคราะห์เต็มรูปแบบ วิธีการ และผลการทดลอง',
-    flow_1:'รวบรวมชุดข้อมูล',flow_2:'สำรวจและทำความสะอาด',flow_3:'วิเคราะห์ข้อมูลเชิงสำรวจ',
-    flow_4:'คัดเลือกคุณลักษณะ',flow_5:'สร้างโมเดล ML',
-    banner1:'วิเคราะห์ข้อมูลทางคลินิก',banner2:'เปรียบเทียบหลายโมเดล',banner3:'อธิบายด้วย SHAP',
-    gini_label:'คะแนน Gini Importance',
-    feat1_title:'การประเมินการทำงาน',feat2_title:'ดัชนี ADL',feat3_title:'คะแนน MMSE',
-    feat4_title:'ความบกพร่องด้านความจำ',feat5_title:'ปัญหาพฤติกรรม',
-    feat1_desc:'ตัวขับเคลื่อนหลัก บันทึกความสามารถของผู้ป่วยในการทำกิจกรรมประจำวัน',
-    feat2_desc:'คะแนน ADL แสดงความสัมพันธ์กับการมีอยู่ของโรค',
-    feat3_desc:'การประเมินทางคลินิก — ยืนยันด้วย t-test (p &lt; 0.001)',
-    feat4_desc:'ความบกพร่องด้านความจำเป็นตัวบ่งชี้ระยะแรก',
-    feat5_desc:'อาการทางพฤติกรรมส่งผลต่อการจำแนก',
-    shap1_name:'กราฟ Beeswarm',shap2_name:'กราฟ Mean |SHAP|',shap3_name:'กราฟ Waterfall',
-    shap1_desc:'การกระจาย SHAP ต่อตัวอย่าง สีแสดงค่าคุณลักษณะ',
-    shap2_desc:'การจัดอันดับความสำคัญทั่วโลกผ่านค่าเฉลี่ย SHAP',
-    shap3_desc:'การวิเคราะห์ผู้ป่วยคนเดียว แสดงการมีส่วนร่วมของแต่ละคุณลักษณะ',
-    shap_bar_title:'Mean |SHAP| — ผลกระทบต่อการวินิจฉัยอัลไซเมอร์',
-    perf_acc:'ความแม่นยำ',perf_auc:'ROC-AUC',perf_f1:'F1-Score',
-    perf_acc_sub:'ดีที่สุดในทุกโมเดล',perf_auc_sub:'จำแนกได้ดีเยี่ยม',perf_f1_sub:'ค่าเฉลี่ยถ่วงน้ำหนัก',
-    th_model:'โมเดล',th_acc:'ความแม่นยำ',th_f1:'F1 (Alz.)',th_cv:'CV',
-    nav_framework:'กรอบงาน',nav_models:'โมเดล',nav_insights:'ข้อมูลเชิงลึก',nav_perf:'ประสิทธิภาพ',nav_doc:'เอกสาร',
-    footer_copy:'© 2025 โปรเจ็คทำนายโรคอัลไซเมอร์',
+    eyebrow:'Final Project · Big Data Analytics · ธ.ค. 2568',
+    ht1:'การทำนายโรคอัลไซเมอร์',ht2:'การทำนาย',ht3:'และการวิเคราะห์ข้อมูลเชิงลึก',ht4:'ด้วย Machine Learning',
+    advisor:'อ.ที่ปรึกษา ศจ. Chung Yung & TA Demiah Kisla Charlery',
+    s_acc:'ความแม่นยำ',s_models:'โมเดล',s_patients:'ผู้ป่วย',s_feat:'คุณลักษณะ',
+    n01:'01 · ระเบียบวิธี',n02:'02 · การทดลอง',n03:'03 · คุณลักษณะ',
+    n04:'04 · อธิบายโมเดล',n05:'05 · ผลลัพธ์',n06:'06 · รายงาน',
+    t_fw:'กรอบการทำงาน',t_models:'ประเมิน 11 โมเดล',t_insights:'คุณลักษณะเชิงทำนายหลัก',
+    t_shap:'การวิเคราะห์ SHAP',t_perf:'ประสิทธิภาพโมเดล',t_doc:'เอกสารนำเสนอ',
+    d_fw:'กระบวนการ 5 ขั้นตอนจากข้อมูลดิบสู่การทำนายที่ตีความได้',
+    d_models:'เปรียบเทียบครอบคลุมเพื่อหาโมเดลที่แม่นยำที่สุด',
+    d_insights:'ระบุผ่าน Gini Importance และยืนยันด้วย EDA',
+    d_shap:'เปิดกล่องดำ Random Forest ด้วย SHAP',
+    d_perf:'Random Forest — ดีที่สุดใน 11 โมเดล',
+    d_doc:'การวิเคราะห์เต็มรูปแบบ วิธีการ และผลการทดลอง',
+    fw1:'รวบรวมชุดข้อมูล',fw2:'สำรวจและทำความสะอาด',fw3:'EDA',fw4:'คัดเลือกคุณลักษณะ',fw5:'สร้างโมเดล ML',
+    gini_lbl:'คะแนน Gini Importance',
+    f1n:'การประเมินการทำงาน',f1d:'ตัวขับเคลื่อนหลัก',
+    f2n:'ดัชนี ADL',f2d:'สัมพันธ์แน่นแฟ้นกับโรค',
+    f3n:'คะแนน MMSE',f3d:'การประเมินความรู้ความเข้าใจ (p < 0.001)',
+    f4n:'ความบกพร่องด้านความจำ',f4d:'ตัวบ่งชี้ระยะแรก',
+    f5n:'ปัญหาพฤติกรรม',f5d:'ส่งผลเพิ่มเติมต่อการจำแนก',
+    sh1n:'กราฟ Mean |SHAP|',sh1d:'FunctionalAssessment สำคัญที่สุด (~0.190) ตามด้วย ADL และ MemoryComplaints',
+    sh2n:'กราฟ Beeswarm',sh2d:'MMSE สูง (แดง) กระจายซ้ายไกล — บ่งชี้ว่าไม่เป็นโรค',
+    sh3n:'กราฟ Waterfall · ตัวอย่าง 1',sh3d:'Base 0.5 → f(x)=1.0 FunctionalAssessment +0.27, ADL +0.25',
+    p_acc:'ความแม่นยำ',p_auc:'ROC-AUC',p_f1:'F1-Score',
+    p_acc_s:'ดีที่สุด',p_auc_s:'จำแนกได้ดีเยี่ยม',p_f1_s:'ค่าเฉลี่ยถ่วงน้ำหนัก',
+    th_m:'โมเดล',th_a:'ความแม่นยำ',th_f:'F1',th_c:'CV',
+    nav_framework:'กรอบงาน',nav_models:'โมเดล',nav_insights:'คุณลักษณะ',nav_perf:'ผลลัพธ์',nav_doc:'เอกสาร',
+    fc:'© 2025 โปรเจ็คทำนายโรคอัลไซเมอร์',
   },
   zh:{
-    eyebrow:'期末專題 · 大數據分析課程 · 2025年12月',
-    hero_l1:'阿茲海默症預測',hero_l2:'預測',hero_l3:'與綜合',
-    hero_l4:'數據分析',hero_l5:'機器學習應用',
-    hero_advisor:'指導教授 雍忠 教授 &amp; TA Demiah Kisla Charlery',
-    stat_acc:'測試準確率',stat_models:'模型數',stat_patients:'患者',stat_features:'特徵數',
-    tag_01:'01 · 研究方法',tag_02:'02 · 實驗設置',tag_03:'03 · 特徵分析',
-    tag_04:'04 · 可解釋性',tag_05:'05 · 研究結果',tag_06:'06 · 報告',
-    sec_framework:'研究框架',sec_models:'11個模型',sec_features:'關鍵特徵',
-    sec_shap:'SHAP分析',sec_perf:'模型效能',sec_doc:'文件',
-    desc_framework:'從原始臨床數據到可解釋ML預測的五階段分析流程。',
-    desc_models:'全面比較以找出最佳阿茲海默症預測模型。',
-    desc_features:'透過Gini重要性識別並經EDA統計測試驗證。',
-    desc_shap:'賽局理論特徵歸因 — 解開隨機森林黑盒子。',
-    desc_perf:'隨機森林 — 11個評估分類器中表現最佳。',
-    desc_doc:'完整分析、詳細方法論及實驗結果。',
-    flow_1:'數據集獲取',flow_2:'數據探索與清理',flow_3:'探索性數據分析',
-    flow_4:'特徵選取',flow_5:'機器學習建模',
-    banner1:'臨床數據分析',banner2:'多模型比較',banner3:'SHAP可解釋性',
-    gini_label:'Gini重要性分數',
-    feat1_title:'功能評估',feat2_title:'ADL指數',feat3_title:'MMSE分數',
-    feat4_title:'記憶抱怨',feat5_title:'行為問題',
-    feat1_desc:'主要驅動因素，評估患者執行複雜日常活動的能力。',
-    feat2_desc:'日常生活活動分數與疾病存在強烈相關。',
-    feat3_desc:'臨床認知篩查 — 經t檢驗驗證（p &lt; 0.001）。',
-    feat4_desc:'患者自述記憶問題作為早期行為指標。',
-    feat5_desc:'行為症狀對分類決策有增量貢獻。',
-    shap1_name:'蜂群圖摘要',shap2_name:'平均|SHAP|',shap3_name:'瀑布圖',
-    shap1_desc:'每個測試樣本的SHAP值分布，顏色代表特徵值。',
-    shap2_desc:'透過平均絕對SHAP值進行全局特徵排名。',
-    shap3_desc:'單一患者分解 — 量化每個特徵的貢獻。',
-    shap_bar_title:'Mean |SHAP| — 對阿茲海默症診斷的影響',
-    perf_acc:'測試準確率',perf_auc:'ROC-AUC',perf_f1:'F1分數',
-    perf_acc_sub:'所有模型最佳',perf_auc_sub:'強大辨別力',perf_f1_sub:'加權平均',
-    th_model:'模型',th_acc:'準確率',th_f1:'F1',th_cv:'CV',
-    nav_framework:'研究框架',nav_models:'模型',nav_insights:'洞察',nav_perf:'效能',nav_doc:'文件',
-    footer_copy:'© 2025 阿茲海默症預測專題',
+    eyebrow:'期末專題 · 大數據分析 · 2025年12月',
+    ht1:'阿茲海默症預測',ht2:'預測',ht3:'與綜合數據分析',ht4:'機器學習應用',
+    advisor:'指導教授 雍忠 教授 & TA Demiah Kisla Charlery',
+    s_acc:'測試準確率',s_models:'模型數',s_patients:'患者記錄',s_feat:'特徵數',
+    n01:'01 · 研究方法',n02:'02 · 實驗設置',n03:'03 · 特徵分析',
+    n04:'04 · 可解釋性',n05:'05 · 研究結果',n06:'06 · 報告',
+    t_fw:'研究框架',t_models:'11個模型評估',t_insights:'關鍵預測特徵',
+    t_shap:'SHAP分析',t_perf:'模型效能',t_doc:'簡報文件',
+    d_fw:'從原始臨床數據到可解釋ML預測的五階段流程',
+    d_models:'全面比較以找出最佳阿茲海默症預測模型',
+    d_insights:'透過Gini重要性識別，EDA統計測試驗證',
+    d_shap:'以賽局理論解開隨機森林黑盒子',
+    d_perf:'隨機森林 — 11個分類器中最佳',
+    d_doc:'完整分析、方法論及實驗結果',
+    fw1:'數據集獲取',fw2:'數據探索與清理',fw3:'探索性數據分析',fw4:'特徵選取',fw5:'機器學習建模',
+    gini_lbl:'Gini重要性分數',
+    f1n:'功能評估',f1d:'主要驅動因素',
+    f2n:'ADL指數',f2d:'與疾病存在強烈相關',
+    f3n:'MMSE分數',f3d:'核心臨床認知篩查 (p < 0.001)',
+    f4n:'記憶抱怨',f4d:'早期行為指標',
+    f5n:'行為問題',f5d:'對分類的增量貢獻',
+    sh1n:'平均|SHAP|條形圖',sh1d:'FunctionalAssessment最重要 (~0.190)，其次為ADL和MemoryComplaints',
+    sh2n:'蜂群圖摘要',sh2d:'高MMSE（紅色）分布在最左側 — 強烈排除阿茲海默症',
+    sh3n:'瀑布圖 · 樣本1',sh3d:'Base 0.5 → f(x)=1.0。FunctionalAssessment +0.27，ADL +0.25',
+    p_acc:'測試準確率',p_auc:'ROC-AUC',p_f1:'F1分數',
+    p_acc_s:'所有模型最佳',p_auc_s:'強大辨別力',p_f1_s:'加權平均',
+    th_m:'模型',th_a:'準確率',th_f:'F1',th_c:'CV準確率',
+    nav_framework:'研究框架',nav_models:'模型',nav_insights:'特徵',nav_perf:'效能',nav_doc:'文件',
+    fc:'© 2025 阿茲海默症預測專題',
   }
 };
 window.setLang=(lang,btn)=>{
-  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+  document.querySelectorAll('.lb').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
   const t=T[lang];
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     const k=el.getAttribute('data-i18n');
-    if(t[k]!==undefined)el.innerHTML=t[k];
+    if(t[k]!==undefined) el.innerHTML=t[k];
   });
   document.documentElement.lang=lang==='zh'?'zh-TW':lang;
 };
