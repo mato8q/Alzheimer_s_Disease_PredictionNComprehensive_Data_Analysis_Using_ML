@@ -93,7 +93,7 @@ nav{
 .hero-title .sub{
   font:italic 300 clamp(22px,2.6vw,36px)/1.4 'Fraunces',Georgia,serif;
   text-transform:none;letter-spacing:-.01em;
-  color:var(--gray);display:block;margin-top:8px
+  color:var(--orange);display:block;margin-top:8px
 }
 
 /* meta row */
@@ -382,7 +382,7 @@ footer{background:var(--black);padding:0;border-top:1px solid #1a1a1a}
   <div class="hero-eyebrow" data-i18n="eyebrow">Final Project · Big Data Analytics · December 2025</div>
   <h1 class="hero-title">
     <span data-i18n="ht1">Alzheimer's Disease</span><br>
-    <span class="orange" data-i18n="ht2">Prediction</span><br>
+    <span id="ht2-span" class="orange" data-i18n="ht2">Prediction</span><br>
     <span data-i18n="ht3">&amp; Comprehensive Data Analysis</span><br>
     <span class="sub" data-i18n="ht4">Using Machine Learning</span>
   </h1>
@@ -618,8 +618,10 @@ footer{background:var(--black);padding:0;border-top:1px solid #1a1a1a}
       <div class="sh-desc" data-i18n="d_doc">Full analysis, methodology, and experimental results.</div>
     </div>
     <div class="pdf-wrap rv">
-      <iframe src="https://raw.githubusercontent.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML/2698d7bc2915c422b877988cd9a15b6d826fdddf/presentation_note_compressed.pdf" title="Project PDF">
-        <p>PDF not available. <a href="https://raw.githubusercontent.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML/2698d7bc2915c422b877988cd9a15b6d826fdddf/presentation_note_compressed.pdf" style="color:var(--orange)">Download PDF</a></p>
+      <iframe 
+        src="https://docs.google.com/viewer?url=https%3A%2F%2Fraw.githubusercontent.com%2Fmato8q%2FAlzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML%2F160cac9a4093ed646810f88de8e4de530f4708df%2FBig_Data_Project_Presentation1.pdf&embedded=true"
+        title="Project Presentation PDF">
+        <p>PDF not available. <a href="https://raw.githubusercontent.com/mato8q/Alzheimer_s_Disease_PredictionNComprehensive_Data_Analysis_Using_ML/160cac9a4093ed646810f88de8e4de530f4708df/Big_Data_Project_Presentation1.pdf" style="color:var(--orange)">Download PDF</a></p>
       </iframe>
     </div>
   </div>
@@ -756,7 +758,7 @@ const T={
   },
   th:{
     eyebrow:'Final Project · Big Data Analytics · ธ.ค. 2568',
-    ht1:'การทำนายโรคอัลไซเมอร์',ht2:'การทำนาย',ht3:'และการวิเคราะห์ข้อมูลเชิงลึก',ht4:'ด้วย Machine Learning',
+    ht1:'การทำนายโรคอัลไซเมอร์',ht2:'และการวิเคราะห์ข้อมูลเชิงลึก',ht3:'',ht4:'ด้วย Machine Learning',
     advisor:'อ.ที่ปรึกษา ศจ. Chung Yung & TA Demiah Kisla Charlery',
     s_acc:'ความแม่นยำ',s_models:'โมเดล',s_patients:'ผู้ป่วย',s_feat:'คุณลักษณะ',
     n01:'01 · ระเบียบวิธี',n02:'02 · การทดลอง',n03:'03 · คุณลักษณะ',
@@ -787,7 +789,7 @@ const T={
   },
   zh:{
     eyebrow:'期末專題 · 大數據分析 · 2025年12月',
-    ht1:'阿茲海默症預測',ht2:'預測',ht3:'與綜合數據分析',ht4:'機器學習應用',
+    ht1:'阿茲海默症預測',ht2:'與綜合數據分析',ht3:'',ht4:'機器學習應用',
     advisor:'指導教授 雍忠 教授 & TA Demiah Kisla Charlery',
     s_acc:'測試準確率',s_models:'模型數',s_patients:'患者記錄',s_feat:'特徵數',
     n01:'01 · 研究方法',n02:'02 · 實驗設置',n03:'03 · 特徵分析',
@@ -825,6 +827,9 @@ window.setLang=(lang,btn)=>{
     const k=el.getAttribute('data-i18n');
     if(t[k]!==undefined) el.innerHTML=t[k];
   });
+  // ht2: orange only in EN (Prediction), plain in TH/ZH
+  const ht2=document.getElementById('ht2-span');
+  if(ht2) ht2.className=lang==='en'?'orange':'';
   document.documentElement.lang=lang==='zh'?'zh-TW':lang;
 };
 </script>
